@@ -6,10 +6,10 @@ services:
     container_name: tupi_digital_db
     environment:
       POSTGRES_USER: tupidigital
-      POSTGRES_PASSWORD: tupipassword
+      POSTGRES_PASSWORD: 12345678
       POSTGRES_DB: tupi_digital
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 

@@ -27,7 +27,7 @@ public class TrilhaService {
 
     public List<TrilhaResponseDTO> listarTrilhas() {
         return trilhaRepository.findAll().stream()
-                .map(TrilhaResponseDTO::fromEntity)
+                .map(t -> TrilhaResponseDTO.fromEntity(t, t.getModulos() != null ? t.getModulos().size() : 0))
                 .collect(Collectors.toList());
     }
 

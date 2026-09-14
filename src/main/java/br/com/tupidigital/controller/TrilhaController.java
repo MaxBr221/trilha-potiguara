@@ -18,22 +18,22 @@ public class TrilhaController {
     @Autowired
     private TrilhaService trilhaService;
 
-    @GetMapping("/trails")
+    @GetMapping("/trilhas")
     public ResponseEntity<List<TrilhaResponseDTO>> listarTrilhas() {
         return ResponseEntity.ok(trilhaService.listarTrilhas());
     }
 
-    @GetMapping("/trails/{id}/modules")
+    @GetMapping("/trilhas/{id}/modulos")
     public ResponseEntity<List<ModuloResponseDTO>> listarModulos(@PathVariable UUID id) {
         return ResponseEntity.ok(trilhaService.listarModulosPorTrilha(id));
     }
 
-    @GetMapping("/modules/{id}/lessons")
+    @GetMapping("/modulos/{id}/licoes")
     public ResponseEntity<List<LicaoResponseDTO>> listarLicoes(@PathVariable UUID id) {
         return ResponseEntity.ok(trilhaService.listarLicoesPorModulo(id));
     }
 
-    @GetMapping("/lessons/{id}")
+    @GetMapping("/licoes/{id}")
     public ResponseEntity<LicaoResponseDTO> obterLicao(@PathVariable UUID id) {
         return ResponseEntity.ok(trilhaService.obterLicao(id));
     }

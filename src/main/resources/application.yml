@@ -3,9 +3,9 @@ spring:
     name: tupi-digital-api
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/tupi_digital
+    url: jdbc:postgresql://localhost:5433/tupi_digital
     username: tupidigital
-    password: tupipassword
+    password: 12345678
     driver-class-name: org.postgresql.Driver
 
   jpa:

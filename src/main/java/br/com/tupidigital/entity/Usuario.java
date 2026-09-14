@@ -15,11 +15,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @EqualsAndHashCode(of = "id")
 public class Usuario implements UserDetails {
 
@@ -41,11 +36,9 @@ public class Usuario implements UserDetails {
     private Perfil perfil;
 
     @Column(nullable = false)
-    @Builder.Default
     private Integer xp = 0;
 
     @Column(name = "sequencia_atual", nullable = false)
-    @Builder.Default
     private Integer sequenciaAtual = 0;
 
     @CreationTimestamp
@@ -90,4 +83,48 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    // --- Construtores ---
+    public Usuario() {
+    }
+
+    public Usuario(UUID id, String nome, String email, String senha, Perfil perfil, Integer xp, Integer sequenciaAtual, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.perfil = perfil;
+        this.xp = xp;
+        this.sequenciaAtual = sequenciaAtual;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
+    }
+
+    // --- Getters e Setters ---
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+
+    public Perfil getPerfil() { return perfil; }
+    public void setPerfil(Perfil perfil) { this.perfil = perfil; }
+
+    public Integer getXp() { return xp; }
+    public void setXp(Integer xp) { this.xp = xp; }
+
+    public Integer getSequenciaAtual() { return sequenciaAtual; }
+    public void setSequenciaAtual(Integer sequenciaAtual) { this.sequenciaAtual = sequenciaAtual; }
+
+    public LocalDateTime getCriadoEm() { return criadoEm; }
+    public void setCriadoEm(LocalDateTime criadoEm) { this.criadoEm = criadoEm; }
+
+    public LocalDateTime getAtualizadoEm() { return atualizadoEm; }
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) { this.atualizadoEm = atualizadoEm; }
 }

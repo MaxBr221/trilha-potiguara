@@ -39,9 +39,19 @@ public class AuthenticationController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+        Usuario authUser = (Usuario) auth.getPrincipal();
+        var token = tokenService.generateToken(authUser);
 
-        return ResponseEntity.ok(new TokenResponseDTO(token));
+        TokenResponseDTO.UsuarioSessaoDTO sessaoDTO = new TokenResponseDTO.UsuarioSessaoDTO(
+                authUser.getId(),
+                authUser.getNome(),
+                authUser.getEmail(),
+                authUser.getXp(),
+                authUser.getSequenciaAtual(),
+                authUser.getPerfil().name()
+        );
+
+        return ResponseEntity.ok(new TokenResponseDTO(token, sessaoDTO));
     }
 
     @PostMapping("/register")
@@ -53,14 +63,13 @@ public class AuthenticationController {
         String encryptedPassword = passwordEncoder.encode(data.senha());
         Perfil perfil = data.perfil() != null ? data.perfil() : Perfil.USER;
 
-        Usuario newUsuario = Usuario.builder()
-                .nome(data.nome())
-                .email(data.email())
-                .senha(encryptedPassword)
-                .perfil(perfil)
-                .xp(0)
-                .sequenciaAtual(0)
-                .build();
+        Usuario newUsuario = new Usuario();
+        newUsuario.setNome(data.nome());
+        newUsuario.setEmail(data.email());
+        newUsuario.setSenha(encryptedPassword);
+        newUsuario.setPerfil(perfil);
+        newUsuario.setXp(0);
+        newUsuario.setSequenciaAtual(0);
 
         this.repository.save(newUsuario);
 
