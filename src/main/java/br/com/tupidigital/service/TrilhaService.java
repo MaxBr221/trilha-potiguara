@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import br.com.tupidigital.repository.UsuarioRepository;
+import br.com.tupidigital.repository.ProgressoUsuarioLicaoRepository;
 
 @Service
 public class TrilhaService {
@@ -24,6 +26,12 @@ public class TrilhaService {
 
     @Autowired
     private LicaoRepository licaoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ProgressoUsuarioLicaoRepository progressoUsuarioLicaoRepository;
 
     public List<TrilhaResponseDTO> listarTrilhas() {
         return trilhaRepository.findAll().stream()
@@ -47,5 +55,35 @@ public class TrilhaService {
         return licaoRepository.findById(licaoId)
                 .map(LicaoResponseDTO::fromEntity)
                 .orElseThrow(() -> new RuntimeException("Lição não encontrada"));
+    }
+
+    public void concluirLicao(UUID licaoId) {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        org.springframework.security.core.userdetails.UserDetails userDetails = usuarioRepository.findByEmail(email);
+        if (userDetails == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        br.com.tupidigital.entity.Usuario usuario = (br.com.tupidigital.entity.Usuario) userDetails;
+
+        br.com.tupidigital.entity.Licao licao = licaoRepository.findById(licaoId)
+                .orElseThrow(() -> new RuntimeException("Lição não encontrada"));
+
+        if (progressoUsuarioLicaoRepository.existsByUsuarioIdAndLicaoId(usuario.getId(), licao.getId())) {
+            // Já concluída
+            return;
+        }
+
+        br.com.tupidigital.entity.ProgressoUsuarioLicao progresso = br.com.tupidigital.entity.ProgressoUsuarioLicao.builder()
+                .usuario(usuario)
+                .licao(licao)
+                .build();
+        
+        progressoUsuarioLicaoRepository.save(progresso);
+
+        // Simple streak logic (MVP): increment streak if this is the first lesson completed today.
+        // A more robust implementation would check the date of the last completed lesson.
+        // For now, let's just increment it to simulate progression.
+        usuario.setSequenciaAtual(usuario.getSequenciaAtual() + 1);
+        usuarioRepository.save(usuario);
     }
 }

@@ -23,9 +23,9 @@ public class TrilhaController {
         return ResponseEntity.ok(trilhaService.listarTrilhas());
     }
 
-    @GetMapping("/trilhas/{id}/modulos")
-    public ResponseEntity<List<ModuloResponseDTO>> listarModulos(@PathVariable UUID id) {
-        return ResponseEntity.ok(trilhaService.listarModulosPorTrilha(id));
+    @GetMapping("/trilhas/{trailId}/modulos")
+    public ResponseEntity<List<ModuloResponseDTO>> listarModulos(@PathVariable UUID trailId) {
+        return ResponseEntity.ok(trilhaService.listarModulosPorTrilha(trailId));
     }
 
     @GetMapping("/modulos/{id}/licoes")
@@ -36,5 +36,11 @@ public class TrilhaController {
     @GetMapping("/licoes/{id}")
     public ResponseEntity<LicaoResponseDTO> obterLicao(@PathVariable UUID id) {
         return ResponseEntity.ok(trilhaService.obterLicao(id));
+    }
+
+    @PostMapping("/licoes/{id}/concluir")
+    public ResponseEntity<Void> concluirLicao(@PathVariable UUID id) {
+        trilhaService.concluirLicao(id);
+        return ResponseEntity.ok().build();
     }
 }
