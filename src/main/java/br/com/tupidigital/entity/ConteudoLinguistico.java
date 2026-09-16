@@ -36,6 +36,7 @@ public class ConteudoLinguistico {
     @Column(name = "tipo", nullable = false, length = 20)
     private String tipo; // e.g., PALAVRA, FRASE
 
+    @Builder.Default
     @ManyToMany(mappedBy = "conteudos", fetch = FetchType.LAZY)
     private Set<Licao> licoes = new HashSet<>();
 

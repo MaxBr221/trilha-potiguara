@@ -9,6 +9,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import br.com.tupidigital.repository.ConquistaRepository;
+import br.com.tupidigital.repository.UsuarioConquistaRepository;
+import br.com.tupidigital.repository.ProgressoUsuarioExercicioRepository;
+import br.com.tupidigital.dto.DashboardConquistaDTO;
+import br.com.tupidigital.entity.UsuarioConquista;
+
 @Service
 public class UsuarioService {
 
@@ -17,6 +26,15 @@ public class UsuarioService {
 
     @Autowired
     private ProgressoUsuarioLicaoRepository progressoUsuarioLicaoRepository;
+    
+    @Autowired
+    private ProgressoUsuarioExercicioRepository progressoUsuarioExercicioRepository;
+
+    @Autowired
+    private ConquistaRepository conquistaRepository;
+
+    @Autowired
+    private UsuarioConquistaRepository usuarioConquistaRepository;
 
     public DashboardResponseDTO obterDashboard() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -30,15 +48,52 @@ public class UsuarioService {
         
         long licoesConcluidas = progressoUsuarioLicaoRepository.countByUsuarioId(usuario.getId());
         
-        // Mocking taxa de acerto based on completed lessons (e.g., each lesson gives a slight boost up to 100)
-        // A real implementation would require storing exercises answers history.
-        int taxaAcerto = Math.min(100, 50 + (int) (licoesConcluidas * 5));
+        long totalExercicios = progressoUsuarioExercicioRepository.countByUsuarioId(usuario.getId());
+        long totalAcertos = progressoUsuarioExercicioRepository.countByUsuarioIdAndAcertouTrue(usuario.getId());
+        
+        int taxaAcerto = 0;
+        if (totalExercicios > 0) {
+            taxaAcerto = (int) ((totalAcertos * 100) / totalExercicios);
+        }
+        
+        // Fetch conquistas
+        Map<java.util.UUID, UsuarioConquista> conquistasDesbloqueadas = usuarioConquistaRepository.findByUsuarioId(usuario.getId())
+                .stream()
+                .collect(Collectors.toMap(uc -> uc.getConquista().getId(), uc -> uc));
+                
+        List<DashboardConquistaDTO> conquistasDTO = conquistaRepository.findAll().stream()
+                .map(c -> {
+                    UsuarioConquista uc = conquistasDesbloqueadas.get(c.getId());
+                    boolean desbloqueada = uc != null;
+                    int progresso = desbloqueada ? 100 : 0;
+                    
+                    if (!desbloqueada) {
+                        if (c.getMetaXp() != null && c.getMetaXp() > 0) {
+                            progresso = Math.min(100, (usuario.getXp() * 100) / c.getMetaXp());
+                        } else if (c.getMetaLicoes() != null && c.getMetaLicoes() > 0) {
+                            progresso = Math.min(100, (int) ((licoesConcluidas * 100) / c.getMetaLicoes()));
+                        }
+                    }
+                    
+                    return new DashboardConquistaDTO(
+                        c.getId(),
+                        c.getTitulo(),
+                        c.getDescricao(),
+                        c.getIcone(),
+                        c.getCorBase(),
+                        desbloqueada,
+                        progresso,
+                        desbloqueada ? uc.getDataObtencao() : null
+                    );
+                })
+                .collect(Collectors.toList());
         
         return new DashboardResponseDTO(
                 usuario.getXp(),
                 usuario.getSequenciaAtual(),
                 (int) licoesConcluidas,
-                taxaAcerto
+                taxaAcerto,
+                conquistasDTO
         );
     }
 }

@@ -37,6 +37,7 @@ public class Licao {
     @JoinColumn(name = "modulo_id", nullable = false)
     private Modulo modulo;
 
+    @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "licao_conteudo",

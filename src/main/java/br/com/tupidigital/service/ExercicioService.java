@@ -8,6 +8,7 @@ import br.com.tupidigital.entity.Usuario;
 import br.com.tupidigital.repository.ExercicioRepository;
 import br.com.tupidigital.repository.UsuarioRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
+import br.com.tupidigital.repository.ProgressoUsuarioExercicioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class ExercicioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ProgressoUsuarioExercicioRepository progressoUsuarioExercicioRepository;
 
     public List<ExercicioResponseDTO> listarExerciciosPorLicao(UUID licaoId) {
         return exercicioRepository.findByLicaoIdOrderByOrdemIndexAsc(licaoId).stream()
@@ -41,18 +45,27 @@ public class ExercicioService {
 
         Integer xpGanho = correta ? exercicio.getPontuacaoXp() : 0;
 
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        org.springframework.security.core.userdetails.UserDetails userDetails = usuarioRepository.findByEmail(email);
+        if (userDetails == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        Usuario usuario = (Usuario) userDetails;
+
         if (correta) {
-            String email = SecurityContextHolder.getContext().getAuthentication().getName();
-            org.springframework.security.core.userdetails.UserDetails userDetails = usuarioRepository.findByEmail(email);
-            if (userDetails == null) {
-                throw new RuntimeException("Usuário não encontrado");
-            }
-            Usuario usuario = (Usuario) userDetails;
-            
             usuario.setXp(usuario.getXp() + xpGanho);
             usuarioRepository.save(usuario);
         }
 
+        // Salva o histórico de progresso do exercício
+        br.com.tupidigital.entity.ProgressoUsuarioExercicio progressoExercicio = new br.com.tupidigital.entity.ProgressoUsuarioExercicio();
+        progressoExercicio.setUsuario(usuario);
+        progressoExercicio.setExercicio(exercicio);
+        progressoExercicio.setAcertou(correta);
+        progressoExercicio.setCriadoEm(java.time.LocalDateTime.now());
+        
+        progressoUsuarioExercicioRepository.save(progressoExercicio);
+        
         return new ValidacaoRespostaResponseDTO(correta, xpGanho, exercicio.getRespostaCorreta());
     }
 }

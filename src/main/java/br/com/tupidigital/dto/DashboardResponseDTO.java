@@ -4,5 +4,6 @@ public record DashboardResponseDTO(
         Integer xp,
         Integer diasOfensiva,
         Integer licoesConcluidas,
-        Integer taxaAcerto
+        Integer taxaAcerto,
+        java.util.List<DashboardConquistaDTO> conquistas
 ) {}

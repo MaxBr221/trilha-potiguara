@@ -14,6 +14,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import br.com.tupidigital.repository.UsuarioRepository;
 import br.com.tupidigital.repository.ProgressoUsuarioLicaoRepository;
+import br.com.tupidigital.entity.Usuario;
+import br.com.tupidigital.entity.Modulo;
+import br.com.tupidigital.entity.Licao;
+import br.com.tupidigital.entity.ProgressoUsuarioLicao;
+import java.util.ArrayList;
 
 @Service
 public class TrilhaService {
@@ -33,18 +38,18 @@ public class TrilhaService {
     @Autowired
     private ProgressoUsuarioLicaoRepository progressoUsuarioLicaoRepository;
 
-    private br.com.tupidigital.entity.Usuario getAuthenticatedUsuario() {
-        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+    private Usuario getAuthenticatedUsuario() {
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
             return null;
         }
         String email = auth.getName();
         org.springframework.security.core.userdetails.UserDetails userDetails = usuarioRepository.findByEmail(email);
-        return (br.com.tupidigital.entity.Usuario) userDetails;
+        return (Usuario) userDetails;
     }
 
     public List<TrilhaResponseDTO> listarTrilhas() {
-        br.com.tupidigital.entity.Usuario usuario = getAuthenticatedUsuario();
+        Usuario usuario = getAuthenticatedUsuario();
         return trilhaRepository.findAll().stream()
                 .map(t -> {
                     int quantidadeModulos = t.getModulos() != null ? t.getModulos().size() : 0;
@@ -63,16 +68,16 @@ public class TrilhaService {
     }
 
     public List<ModuloResponseDTO> listarModulosPorTrilha(UUID trilhaId) {
-        br.com.tupidigital.entity.Usuario usuario = getAuthenticatedUsuario();
-        List<br.com.tupidigital.entity.Modulo> modulos = moduloRepository.findByTrilhaIdOrderByOrdemIndexAsc(trilhaId);
+        Usuario usuario = getAuthenticatedUsuario();
+        List<Modulo> modulos = moduloRepository.findByTrilhaIdOrderByOrdemIndexAsc(trilhaId);
         
-        List<ModuloResponseDTO> response = new java.util.ArrayList<>();
+        List<ModuloResponseDTO> response = new ArrayList<>();
         boolean previousModuleCompleted = true; // First module is always unlocked
         
-        for (br.com.tupidigital.entity.Modulo modulo : modulos) {
+        for (Modulo modulo : modulos) {
             boolean isLocked = !previousModuleCompleted;
             
-            List<LicaoResponseDTO> licoesDTO = (modulo.getLicoes() != null ? modulo.getLicoes() : new java.util.ArrayList<br.com.tupidigital.entity.Licao>()).stream()
+            List<LicaoResponseDTO> licoesDTO = (modulo.getLicoes() != null ? modulo.getLicoes() : new ArrayList<Licao>()).stream()
                     .map(licao -> {
                         boolean estaConcluida = false;
                         if (usuario != null) {
@@ -94,7 +99,7 @@ public class TrilhaService {
     }
 
     public List<LicaoResponseDTO> listarLicoesPorModulo(UUID moduloId) {
-        br.com.tupidigital.entity.Usuario usuario = getAuthenticatedUsuario();
+        Usuario usuario = getAuthenticatedUsuario();
         return licaoRepository.findByModuloIdOrderByOrdemIndexAsc(moduloId).stream()
                 .map(licao -> {
                     boolean estaConcluida = false;
@@ -107,7 +112,7 @@ public class TrilhaService {
     }
 
     public LicaoResponseDTO obterLicao(UUID licaoId) {
-        br.com.tupidigital.entity.Usuario usuario = getAuthenticatedUsuario();
+        Usuario usuario = getAuthenticatedUsuario();
         return licaoRepository.findById(licaoId)
                 .map(licao -> {
                     boolean estaConcluida = false;
@@ -120,12 +125,12 @@ public class TrilhaService {
     }
 
     public void concluirLicao(UUID licaoId) {
-        br.com.tupidigital.entity.Usuario usuario = getAuthenticatedUsuario();
+        Usuario usuario = getAuthenticatedUsuario();
         if (usuario == null) {
             throw new RuntimeException("Usuário precisa estar autenticado para concluir lições");
         }
 
-        br.com.tupidigital.entity.Licao licao = licaoRepository.findById(licaoId)
+        Licao licao = licaoRepository.findById(licaoId)
                 .orElseThrow(() -> new RuntimeException("Lição não encontrada"));
 
         if (progressoUsuarioLicaoRepository.existsByUsuarioIdAndLicaoId(usuario.getId(), licao.getId())) {
@@ -133,15 +138,53 @@ public class TrilhaService {
             return;
         }
 
-        br.com.tupidigital.entity.ProgressoUsuarioLicao progresso = br.com.tupidigital.entity.ProgressoUsuarioLicao.builder()
+        ProgressoUsuarioLicao progresso = ProgressoUsuarioLicao.builder()
                 .usuario(usuario)
                 .licao(licao)
                 .build();
         
         progressoUsuarioLicaoRepository.save(progresso);
 
-        // Simple streak logic (MVP): increment streak se for a primeira do dia (vamos simplificar e apenas somar por enquanto)
+        // Aumentar ofensiva (incrementa se for concluída a lição)
         usuario.setSequenciaAtual(usuario.getSequenciaAtual() + 1);
         usuarioRepository.save(usuario);
+
+        // Lógica de Conquistas (MVP)
+        checarEAtribuirConquista(usuario, "Primeiros Passos");
+        
+        if (usuario.getSequenciaAtual() >= 7) {
+            checarEAtribuirConquista(usuario, "Fogo Inicial");
+        }
+        
+        // Verifica se concluiu o módulo 1 (Explorador Nato) - simplificado para: tem >= 3 lições
+        long licoesConcluidas = progressoUsuarioLicaoRepository.countByUsuarioId(usuario.getId());
+        if (licoesConcluidas >= 3) {
+            checarEAtribuirConquista(usuario, "Explorador Nato");
+        }
+    }
+
+    @Autowired
+    private br.com.tupidigital.repository.ConquistaRepository conquistaRepository;
+
+    @Autowired
+    private br.com.tupidigital.repository.UsuarioConquistaRepository usuarioConquistaRepository;
+
+    private void checarEAtribuirConquista(Usuario usuario, String tituloConquista) {
+        br.com.tupidigital.entity.Conquista conquista = conquistaRepository.findAll().stream()
+                .filter(c -> c.getTitulo().equalsIgnoreCase(tituloConquista))
+                .findFirst().orElse(null);
+
+        if (conquista != null) {
+            boolean jaPossui = usuarioConquistaRepository.findByUsuarioId(usuario.getId()).stream()
+                    .anyMatch(uc -> uc.getConquista().getId().equals(conquista.getId()));
+            
+            if (!jaPossui) {
+                br.com.tupidigital.entity.UsuarioConquista uc = new br.com.tupidigital.entity.UsuarioConquista();
+                uc.setUsuario(usuario);
+                uc.setConquista(conquista);
+                uc.setDataObtencao(java.time.LocalDateTime.now());
+                usuarioConquistaRepository.save(uc);
+            }
+        }
     }
 }
