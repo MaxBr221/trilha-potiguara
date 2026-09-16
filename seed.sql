@@ -1,4 +1,4 @@
--- Limpeza prévia para garantir que o seed não dê erro de duplicidade se rodado várias vezes
+
 DELETE FROM usuario_conquistas;
 DELETE FROM conquistas;
 DELETE FROM exercicio_opcoes;
@@ -12,7 +12,7 @@ DELETE FROM trilhas;
 DELETE FROM usuarios;
 
 -- ==========================================
--- 1. Criação do Usuário (Com XP e Sequência para testar Dashboard/Conquistas)
+-- 1. Criação do Usuário
 -- ==========================================
 INSERT INTO usuarios (id, nome, email, senha, perfil, xp, sequencia_atual, criado_em, atualizado_em)
 VALUES ('11111111-1111-1111-1111-111111111111', 'João Testador', 'teste@tupi.com', '$2a$10$wY.d0jXvG/0Z2Yw3x0Z2Yw3x0Z2Yw3x0Z2Yw3x0Z2Yw3x', 'ALUNO', 1500, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
@@ -23,124 +23,328 @@ VALUES ('11111111-1111-1111-1111-111111111112', 'Maxuel Lima', 'maxsuel.lima@dcx
 -- ==========================================
 -- 2. Criação das Trilhas de Aprendizado
 -- ==========================================
--- Trilha 1: Básica (PUBLISHED)
 INSERT INTO trilhas (id, nome, descricao, status, criado_em, atualizado_em)
 VALUES ('22222222-2222-2222-2222-222222222222', 'Trilha Potiguara Básica', 'Aprenda os conceitos básicos da língua e cultura Potiguara. Ideal para iniciantes.', 'PUBLISHED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- Trilha 2: Intermediária (PUBLISHED)
 INSERT INTO trilhas (id, nome, descricao, status, criado_em, atualizado_em)
 VALUES ('22222222-2222-2222-2222-222222222223', 'Vocabulário do Dia a Dia', 'Aprofunde seu conhecimento com palavras usadas no cotidiano.', 'PUBLISHED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- Trilha 3: Avançada/Cultura (DRAFT - Para testar como aparece no frontend)
-INSERT INTO trilhas (id, nome, descricao, status, criado_em, atualizado_em)
-VALUES ('22222222-2222-2222-2222-222222222224', 'Mitos e Lendas Tupi', 'Explore a rica cultura por trás da língua.', 'DRAFT', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- ==========================================
+-- Módulos, Lições, Conteúdos e Exercícios
+-- ==========================================
+INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em) VALUES ('82505dbd-591f-4f67-9e25-57daa0c4d10a', 'Módulo 1: Primeiros Passos (Vogais e Sons Iniciais)', 'Aprenda as vogais comuns e o Y.', 1, '22222222-2222-2222-2222-222222222222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'Lição 1: Vogais Comuns (A, E, I, O, U)', 'Conheça anama, endé, itá, oka e upi''a.', 1, '82505dbd-591f-4f67-9e25-57daa0c4d10a', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('c8cd9a43-5ed8-4513-a6f1-f25d8ce18216', 'anama', 'família', 'a-NA-ma', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'c8cd9a43-5ed8-4513-a6f1-f25d8ce18216');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('01da3810-ad7c-46a0-a14f-b8c5d663d1dd', 'endé', 'você, tu', 'en-DÉ', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('7b4382b5-690b-43d6-a61d-7bcbca094ac5', '01da3810-ad7c-46a0-a14f-b8c5d663d1dd');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('c79c66a2-95d7-413c-bd82-7b2a470a787a', 'itá', 'pedra', 'i-TÁ', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'c79c66a2-95d7-413c-bd82-7b2a470a787a');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('f2828454-f5ad-4538-a744-fd728df1404d', 'oka', 'casa', 'Ó-ca', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'f2828454-f5ad-4538-a744-fd728df1404d');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('b83f6e5f-84ed-40ad-9407-e0a0f28bd015', 'upi''a', 'ovo', 'u-pi-Á', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'b83f6e5f-84ed-40ad-9407-e0a0f28bd015');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('8a7fa2b0-b5b6-4683-9c36-5dddb7793ee2', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'O que significa a palavra "anama" em português?', 'MULTIPLA_ESCOLHA', 'família', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('8a7fa2b0-b5b6-4683-9c36-5dddb7793ee2', 'pedra');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('8a7fa2b0-b5b6-4683-9c36-5dddb7793ee2', 'sol');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('8a7fa2b0-b5b6-4683-9c36-5dddb7793ee2', 'família');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('c21c7c9c-6f2d-4781-b669-9fc8803cb8e1', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'Como se diz "família" em Tupi?', 'MULTIPLA_ESCOLHA', 'anama', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('c21c7c9c-6f2d-4781-b669-9fc8803cb8e1', 'anama');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('c21c7c9c-6f2d-4781-b669-9fc8803cb8e1', 'tupã');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('c21c7c9c-6f2d-4781-b669-9fc8803cb8e1', 'poranga');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('55213f13-62c9-40b3-acd8-d9fd599e9430', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'O que significa a palavra "endé" em português?', 'MULTIPLA_ESCOLHA', 'você, tu', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('55213f13-62c9-40b3-acd8-d9fd599e9430', 'você, tu');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('55213f13-62c9-40b3-acd8-d9fd599e9430', 'família');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('55213f13-62c9-40b3-acd8-d9fd599e9430', 'menino, criança');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('13b1272a-c06b-43f8-aa85-193c52bf5b0a', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'Como se diz "você, tu" em Tupi?', 'MULTIPLA_ESCOLHA', 'endé', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('13b1272a-c06b-43f8-aa85-193c52bf5b0a', 'tupã');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('13b1272a-c06b-43f8-aa85-193c52bf5b0a', 'oka');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('13b1272a-c06b-43f8-aa85-193c52bf5b0a', 'endé');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('808d0e0e-721d-42b4-aab0-e09e49e1905a', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'O que significa a palavra "itá" em português?', 'MULTIPLA_ESCOLHA', 'pedra', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('808d0e0e-721d-42b4-aab0-e09e49e1905a', 'pedra');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('808d0e0e-721d-42b4-aab0-e09e49e1905a', 'água, rio');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('808d0e0e-721d-42b4-aab0-e09e49e1905a', 'família');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('6dc15f54-d0b4-49fb-ba81-c707f50cbb15', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'Como se diz "pedra" em Tupi?', 'MULTIPLA_ESCOLHA', 'itá', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6dc15f54-d0b4-49fb-ba81-c707f50cbb15', 'itá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6dc15f54-d0b4-49fb-ba81-c707f50cbb15', 'upi''a');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6dc15f54-d0b4-49fb-ba81-c707f50cbb15', 'poranga');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('f8b250ce-e9c7-4e0b-8740-a41e649cd1dc', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'O que significa a palavra "oka" em português?', 'MULTIPLA_ESCOLHA', 'casa', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f8b250ce-e9c7-4e0b-8740-a41e649cd1dc', 'casa');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f8b250ce-e9c7-4e0b-8740-a41e649cd1dc', 'lua');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f8b250ce-e9c7-4e0b-8740-a41e649cd1dc', 'mãe');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('6cad4cb7-cc11-4d0f-a10d-0ee5f21da2be', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'Como se diz "casa" em Tupi?', 'MULTIPLA_ESCOLHA', 'oka', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6cad4cb7-cc11-4d0f-a10d-0ee5f21da2be', 'pipoca');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6cad4cb7-cc11-4d0f-a10d-0ee5f21da2be', 'anama');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6cad4cb7-cc11-4d0f-a10d-0ee5f21da2be', 'oka');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('78f8e994-5747-4d81-b908-c3e2f866fc29', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'O que significa a palavra "upi''a" em português?', 'MULTIPLA_ESCOLHA', 'ovo', 10, 9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('78f8e994-5747-4d81-b908-c3e2f866fc29', 'fruta, árvore');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('78f8e994-5747-4d81-b908-c3e2f866fc29', 'ovo');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('78f8e994-5747-4d81-b908-c3e2f866fc29', 'menino, criança');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('78710f7f-39bb-48a6-9edb-c704104e552c', '7b4382b5-690b-43d6-a61d-7bcbca094ac5', 'Como se diz "ovo" em Tupi?', 'MULTIPLA_ESCOLHA', 'upi''a', 10, 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('78710f7f-39bb-48a6-9edb-c704104e552c', 'upi''a');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('78710f7f-39bb-48a6-9edb-c704104e552c', 'sy');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('78710f7f-39bb-48a6-9edb-c704104e552c', 'igarapé');
+
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'Lição 2: A Vogal Especial Y e Água', 'Aprenda sobre o som Y com as palavras sy, y e ybá.', 2, '82505dbd-591f-4f67-9e25-57daa0c4d10a', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('ad4ad406-2065-4bed-bc28-99981a1a6ab1', 'sy', 'mãe', 'SY', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'ad4ad406-2065-4bed-bc28-99981a1a6ab1');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('edd0fcca-63d0-42f9-ab01-f3973d8d031e', 'y', 'água, rio', 'y', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'edd0fcca-63d0-42f9-ab01-f3973d8d031e');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('4c4997c4-68a2-4bdd-bfd5-ca18e80fd9e3', 'ybá', 'fruta, árvore', 'ybá', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('50bf8e47-0e7c-4984-8d7d-2a17eae9289b', '4c4997c4-68a2-4bdd-bfd5-ca18e80fd9e3');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('41835120-c2ef-4657-a2ff-0381ccc2a8d1', 'igarapé', 'caminho de canoa', 'igarapé', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('50bf8e47-0e7c-4984-8d7d-2a17eae9289b', '41835120-c2ef-4657-a2ff-0381ccc2a8d1');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('bb2ee2de-50e6-49b8-90ba-36e1361f122d', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'O que significa a palavra "sy" em português?', 'MULTIPLA_ESCOLHA', 'mãe', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('bb2ee2de-50e6-49b8-90ba-36e1361f122d', 'mãe');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('bb2ee2de-50e6-49b8-90ba-36e1361f122d', 'aldeia');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('bb2ee2de-50e6-49b8-90ba-36e1361f122d', 'tartaruga');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('5b748711-6968-460e-843d-6b09cf619135', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'Como se diz "mãe" em Tupi?', 'MULTIPLA_ESCOLHA', 'sy', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5b748711-6968-460e-843d-6b09cf619135', 'cunhã');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5b748711-6968-460e-843d-6b09cf619135', 'ka''a');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5b748711-6968-460e-843d-6b09cf619135', 'sy');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('9518e0a9-c729-4d2e-ab1e-39ec7e83f906', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'O que significa a palavra "y" em português?', 'MULTIPLA_ESCOLHA', 'água, rio', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('9518e0a9-c729-4d2e-ab1e-39ec7e83f906', 'fruta, árvore');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('9518e0a9-c729-4d2e-ab1e-39ec7e83f906', 'casa');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('9518e0a9-c729-4d2e-ab1e-39ec7e83f906', 'água, rio');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('4393c992-1764-4ddd-aa62-94dcb57a0be5', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'Como se diz "água, rio" em Tupi?', 'MULTIPLA_ESCOLHA', 'y', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('4393c992-1764-4ddd-aa62-94dcb57a0be5', 'y');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('4393c992-1764-4ddd-aa62-94dcb57a0be5', 'guaraci');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('4393c992-1764-4ddd-aa62-94dcb57a0be5', 'curumim');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('23de6f81-fd3c-41be-8d2a-d4cec50f1653', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'O que significa a palavra "ybá" em português?', 'MULTIPLA_ESCOLHA', 'fruta, árvore', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('23de6f81-fd3c-41be-8d2a-d4cec50f1653', 'fruta, árvore');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('23de6f81-fd3c-41be-8d2a-d4cec50f1653', 'mulher');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('23de6f81-fd3c-41be-8d2a-d4cec50f1653', 'sair');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('9e3f1569-f996-4318-96c2-822e5fed62d8', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'Como se diz "fruta, árvore" em Tupi?', 'MULTIPLA_ESCOLHA', 'ybá', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('9e3f1569-f996-4318-96c2-822e5fed62d8', 'ixé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('9e3f1569-f996-4318-96c2-822e5fed62d8', 'igarapé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('9e3f1569-f996-4318-96c2-822e5fed62d8', 'ybá');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('d4cfeea7-bcfd-41b8-8f67-2d876008720f', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'O que significa a palavra "igarapé" em português?', 'MULTIPLA_ESCOLHA', 'caminho de canoa', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('d4cfeea7-bcfd-41b8-8f67-2d876008720f', 'Deus');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('d4cfeea7-bcfd-41b8-8f67-2d876008720f', 'eu');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('d4cfeea7-bcfd-41b8-8f67-2d876008720f', 'caminho de canoa');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('1215ed93-0ee0-4ada-99e1-d769f4b95435', '50bf8e47-0e7c-4984-8d7d-2a17eae9289b', 'Como se diz "caminho de canoa" em Tupi?', 'MULTIPLA_ESCOLHA', 'igarapé', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('1215ed93-0ee0-4ada-99e1-d769f4b95435', 'igarapé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('1215ed93-0ee0-4ada-99e1-d769f4b95435', 'tupã');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('1215ed93-0ee0-4ada-99e1-d769f4b95435', 'abá');
+
+INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em) VALUES ('55069bdf-287b-4597-8291-4427476f8a77', 'Módulo 2: Primeiras Consoantes', 'Vamos aprender P, M, T, K, S e X.', 2, '22222222-2222-2222-2222-222222222222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'Lição 1: As letras P, M e T', 'Conheça pó, mena, taba e tupã.', 1, '55069bdf-287b-4597-8291-4427476f8a77', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('9195845f-e618-428f-9a89-969b59cd2db8', 'pó', 'mão', 'PÓ', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', '9195845f-e618-428f-9a89-969b59cd2db8');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('6230fc24-4358-4b6c-925b-ef29d4e90e72', 'mena', 'marido', 'ME-na', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', '6230fc24-4358-4b6c-925b-ef29d4e90e72');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('db643030-0c98-460e-8fa6-d867aec9aeb8', 'taba', 'aldeia', 'TA-ba', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'db643030-0c98-460e-8fa6-d867aec9aeb8');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('8e946c06-fca8-4700-b0ae-abfb32f2ea83', 'tupã', 'Deus', 'tupã', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', '8e946c06-fca8-4700-b0ae-abfb32f2ea83');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('27663376-186e-49c6-b3b8-07567b642a27', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'O que significa a palavra "pó" em português?', 'MULTIPLA_ESCOLHA', 'mão', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('27663376-186e-49c6-b3b8-07567b642a27', 'homem, pessoa');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('27663376-186e-49c6-b3b8-07567b642a27', 'mãe');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('27663376-186e-49c6-b3b8-07567b642a27', 'mão');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('24e20a27-92d8-4f45-a12c-dd8eb132f798', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'Como se diz "mão" em Tupi?', 'MULTIPLA_ESCOLHA', 'pó', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('24e20a27-92d8-4f45-a12c-dd8eb132f798', 'igarapé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('24e20a27-92d8-4f45-a12c-dd8eb132f798', 'pó');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('24e20a27-92d8-4f45-a12c-dd8eb132f798', 'itá');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('e4ce40cf-d329-4eed-a61b-a7617f9961fc', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'O que significa a palavra "mena" em português?', 'MULTIPLA_ESCOLHA', 'marido', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('e4ce40cf-d329-4eed-a61b-a7617f9961fc', 'você, tu');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('e4ce40cf-d329-4eed-a61b-a7617f9961fc', 'marido');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('e4ce40cf-d329-4eed-a61b-a7617f9961fc', 'mulher');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('5ba4f7de-fa17-485f-9d28-962ab20cbf64', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'Como se diz "marido" em Tupi?', 'MULTIPLA_ESCOLHA', 'mena', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5ba4f7de-fa17-485f-9d28-962ab20cbf64', 'pó');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5ba4f7de-fa17-485f-9d28-962ab20cbf64', 'anama');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5ba4f7de-fa17-485f-9d28-962ab20cbf64', 'mena');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('82f6994f-b516-439f-a4fe-927291fbf3df', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'O que significa a palavra "taba" em português?', 'MULTIPLA_ESCOLHA', 'aldeia', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('82f6994f-b516-439f-a4fe-927291fbf3df', 'mão');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('82f6994f-b516-439f-a4fe-927291fbf3df', 'sair');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('82f6994f-b516-439f-a4fe-927291fbf3df', 'aldeia');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('5fb79dd1-36ea-410f-9a46-ac8574292c6b', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'Como se diz "aldeia" em Tupi?', 'MULTIPLA_ESCOLHA', 'taba', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5fb79dd1-36ea-410f-9a46-ac8574292c6b', 'ybá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5fb79dd1-36ea-410f-9a46-ac8574292c6b', 'upi''a');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5fb79dd1-36ea-410f-9a46-ac8574292c6b', 'taba');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('110a1497-ec1f-493c-a4f6-2019d920bcdd', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'O que significa a palavra "tupã" em português?', 'MULTIPLA_ESCOLHA', 'Deus', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('110a1497-ec1f-493c-a4f6-2019d920bcdd', 'Deus');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('110a1497-ec1f-493c-a4f6-2019d920bcdd', 'fruta, árvore');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('110a1497-ec1f-493c-a4f6-2019d920bcdd', 'família');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('052e1e5e-079e-4fce-94f4-6ca5db3dbde2', 'e05cb4e0-dee5-4a6c-9fe8-54f0feb8950a', 'Como se diz "Deus" em Tupi?', 'MULTIPLA_ESCOLHA', 'tupã', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('052e1e5e-079e-4fce-94f4-6ca5db3dbde2', 'tupã');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('052e1e5e-079e-4fce-94f4-6ca5db3dbde2', 'curumim');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('052e1e5e-079e-4fce-94f4-6ca5db3dbde2', 'guaraci');
+
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('eb4b697f-8544-48a9-8984-1f22b3270033', 'Lição 2: As letras K, S e X', 'Aprenda karaí, sem e ixé.', 2, '55069bdf-287b-4597-8291-4427476f8a77', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('8fdcc647-1968-4eb7-a46f-2afa4648a7f8', 'karaí', 'branco', 'ca-ra-Í', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('eb4b697f-8544-48a9-8984-1f22b3270033', '8fdcc647-1968-4eb7-a46f-2afa4648a7f8');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('d2523b74-f324-4d2a-af0f-e6ddd670fda3', 'sem', 'sair', 'SEM', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('eb4b697f-8544-48a9-8984-1f22b3270033', 'd2523b74-f324-4d2a-af0f-e6ddd670fda3');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('28f728bb-78c8-46ad-a3d5-52dae601f7d4', 'ixé', 'eu', 'i-XÉ', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('eb4b697f-8544-48a9-8984-1f22b3270033', '28f728bb-78c8-46ad-a3d5-52dae601f7d4');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('a0f6c948-670e-4d6a-8a50-ddb706b73bea', 'poranga', 'bonito(a)', 'poranga', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('eb4b697f-8544-48a9-8984-1f22b3270033', 'a0f6c948-670e-4d6a-8a50-ddb706b73bea');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('ae150381-0ca6-4dbc-b55f-7aa7f6cec6b1', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'O que significa a palavra "karaí" em português?', 'MULTIPLA_ESCOLHA', 'branco', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ae150381-0ca6-4dbc-b55f-7aa7f6cec6b1', 'família');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ae150381-0ca6-4dbc-b55f-7aa7f6cec6b1', 'água, rio');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ae150381-0ca6-4dbc-b55f-7aa7f6cec6b1', 'branco');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('fb1dcd84-4b17-4f03-b1c0-f461d6f349ec', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'Como se diz "branco" em Tupi?', 'MULTIPLA_ESCOLHA', 'karaí', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('fb1dcd84-4b17-4f03-b1c0-f461d6f349ec', 'karaí');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('fb1dcd84-4b17-4f03-b1c0-f461d6f349ec', 'igarapé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('fb1dcd84-4b17-4f03-b1c0-f461d6f349ec', 'itá');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('5dfdf4d9-359b-4d1a-8849-4e9fd2ada1af', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'O que significa a palavra "sem" em português?', 'MULTIPLA_ESCOLHA', 'sair', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5dfdf4d9-359b-4d1a-8849-4e9fd2ada1af', 'caminho de canoa');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5dfdf4d9-359b-4d1a-8849-4e9fd2ada1af', 'sair');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5dfdf4d9-359b-4d1a-8849-4e9fd2ada1af', 'mãe');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('83d44e49-1cf4-4b85-849b-c09146dd673e', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'Como se diz "sair" em Tupi?', 'MULTIPLA_ESCOLHA', 'sem', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('83d44e49-1cf4-4b85-849b-c09146dd673e', 'ixé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('83d44e49-1cf4-4b85-849b-c09146dd673e', 'arara');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('83d44e49-1cf4-4b85-849b-c09146dd673e', 'sem');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('ac1c3347-9237-4827-8ff3-4796f46b7edf', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'O que significa a palavra "ixé" em português?', 'MULTIPLA_ESCOLHA', 'eu', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ac1c3347-9237-4827-8ff3-4796f46b7edf', 'eu');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ac1c3347-9237-4827-8ff3-4796f46b7edf', 'branco');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ac1c3347-9237-4827-8ff3-4796f46b7edf', 'fruta, árvore');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('11744398-6e4f-4890-ae10-2bf12cc8e803', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'Como se diz "eu" em Tupi?', 'MULTIPLA_ESCOLHA', 'ixé', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('11744398-6e4f-4890-ae10-2bf12cc8e803', 'itá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('11744398-6e4f-4890-ae10-2bf12cc8e803', 'ixé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('11744398-6e4f-4890-ae10-2bf12cc8e803', 'igarapé');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('4754b76e-8967-4534-a4bb-bea7bd7e87f8', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'O que significa a palavra "poranga" em português?', 'MULTIPLA_ESCOLHA', 'bonito(a)', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('4754b76e-8967-4534-a4bb-bea7bd7e87f8', 'água, rio');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('4754b76e-8967-4534-a4bb-bea7bd7e87f8', 'você, tu');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('4754b76e-8967-4534-a4bb-bea7bd7e87f8', 'bonito(a)');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('0167fec9-81a7-4ceb-9e2a-dccb2623fa93', 'eb4b697f-8544-48a9-8984-1f22b3270033', 'Como se diz "bonito(a)" em Tupi?', 'MULTIPLA_ESCOLHA', 'poranga', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0167fec9-81a7-4ceb-9e2a-dccb2623fa93', 'poranga');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0167fec9-81a7-4ceb-9e2a-dccb2623fa93', 'ixé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0167fec9-81a7-4ceb-9e2a-dccb2623fa93', 'endé');
+
+INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em) VALUES ('7a408268-260e-439b-8662-5c0136e790d9', 'Módulo 3: Consoantes Avançadas e Glotal', 'Aprenda B, R, N, Î e a pausa glotal ''.', 3, '22222222-2222-2222-2222-222222222222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('570ee21d-59cc-41f8-b7f8-b610472ebd06', 'Lição 1: As letras B e R', 'Conheça abá, siri e arara.', 1, '7a408268-260e-439b-8662-5c0136e790d9', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('a7a675fd-b541-4d3f-aae2-d1bef517ca32', 'abá', 'homem, pessoa', 'a-BÁ', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('570ee21d-59cc-41f8-b7f8-b610472ebd06', 'a7a675fd-b541-4d3f-aae2-d1bef517ca32');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('893b72b6-1272-46ee-b8b3-75faa174ec8f', 'siri', 'siri', 'si-RI', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('570ee21d-59cc-41f8-b7f8-b610472ebd06', '893b72b6-1272-46ee-b8b3-75faa174ec8f');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('847e657b-79f1-4960-b3cc-e3ba34e38b18', 'arara', 'ave colorida', 'arara', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('570ee21d-59cc-41f8-b7f8-b610472ebd06', '847e657b-79f1-4960-b3cc-e3ba34e38b18');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('34a1263c-323c-4718-8fe0-c48576b686c6', 'capivara', 'comedor de capim', 'capivara', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('570ee21d-59cc-41f8-b7f8-b610472ebd06', '34a1263c-323c-4718-8fe0-c48576b686c6');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('bf4207d4-72c7-4a13-abb0-c82e5a67d795', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'O que significa a palavra "abá" em português?', 'MULTIPLA_ESCOLHA', 'homem, pessoa', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('bf4207d4-72c7-4a13-abb0-c82e5a67d795', 'família');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('bf4207d4-72c7-4a13-abb0-c82e5a67d795', 'homem, pessoa');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('bf4207d4-72c7-4a13-abb0-c82e5a67d795', 'pedra');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('e88d1e8b-99f5-421d-b815-8363a0cda612', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'Como se diz "homem, pessoa" em Tupi?', 'MULTIPLA_ESCOLHA', 'abá', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('e88d1e8b-99f5-421d-b815-8363a0cda612', 'abá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('e88d1e8b-99f5-421d-b815-8363a0cda612', 'karaí');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('e88d1e8b-99f5-421d-b815-8363a0cda612', 'poranga');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('3434a048-0dfc-44bc-9564-345e81fcc5f6', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'O que significa a palavra "siri" em português?', 'MULTIPLA_ESCOLHA', 'siri', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('3434a048-0dfc-44bc-9564-345e81fcc5f6', 'siri');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('3434a048-0dfc-44bc-9564-345e81fcc5f6', 'família');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('3434a048-0dfc-44bc-9564-345e81fcc5f6', 'caminho de canoa');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('6d10aec2-1281-4a0b-8af9-37720ff6f7e8', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'Como se diz "siri" em Tupi?', 'MULTIPLA_ESCOLHA', 'siri', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6d10aec2-1281-4a0b-8af9-37720ff6f7e8', 'siri');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6d10aec2-1281-4a0b-8af9-37720ff6f7e8', 'sem');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6d10aec2-1281-4a0b-8af9-37720ff6f7e8', 'cunhã');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('103351ce-b64c-4f8c-b3a7-78d576ce4bd2', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'O que significa a palavra "arara" em português?', 'MULTIPLA_ESCOLHA', 'ave colorida', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('103351ce-b64c-4f8c-b3a7-78d576ce4bd2', 'orelha');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('103351ce-b64c-4f8c-b3a7-78d576ce4bd2', 'Deus');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('103351ce-b64c-4f8c-b3a7-78d576ce4bd2', 'ave colorida');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('6b681dbf-0585-4cb4-9bad-05af932b4587', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'Como se diz "ave colorida" em Tupi?', 'MULTIPLA_ESCOLHA', 'arara', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6b681dbf-0585-4cb4-9bad-05af932b4587', 'arara');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6b681dbf-0585-4cb4-9bad-05af932b4587', 'endé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('6b681dbf-0585-4cb4-9bad-05af932b4587', 'ybá');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('f0a0c711-15e2-40ff-ba34-3287cb97b687', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'O que significa a palavra "capivara" em português?', 'MULTIPLA_ESCOLHA', 'comedor de capim', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f0a0c711-15e2-40ff-ba34-3287cb97b687', 'casa');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f0a0c711-15e2-40ff-ba34-3287cb97b687', 'milho estourado');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f0a0c711-15e2-40ff-ba34-3287cb97b687', 'comedor de capim');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('b84bd396-6b5f-43e9-a7ef-f731940df898', '570ee21d-59cc-41f8-b7f8-b610472ebd06', 'Como se diz "comedor de capim" em Tupi?', 'MULTIPLA_ESCOLHA', 'capivara', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('b84bd396-6b5f-43e9-a7ef-f731940df898', 'taba');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('b84bd396-6b5f-43e9-a7ef-f731940df898', 'abá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('b84bd396-6b5f-43e9-a7ef-f731940df898', 'capivara');
+
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'Lição 2: As letras N e Î', 'Aprenda nambi, îaboti, cunhã e curumim.', 2, '7a408268-260e-439b-8662-5c0136e790d9', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('33355199-dd77-4a21-b1a6-524b4e3359ef', 'nambi', 'orelha', 'nam-BI', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('22cb7886-4d3e-42e4-8e61-03ce95bf75cd', '33355199-dd77-4a21-b1a6-524b4e3359ef');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('6620e16a-6ff7-49a6-a8a9-1e099585e2aa', 'îaboti', 'tartaruga', 'ja-bo-TI', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('22cb7886-4d3e-42e4-8e61-03ce95bf75cd', '6620e16a-6ff7-49a6-a8a9-1e099585e2aa');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('1dccea0c-acec-48e7-8dfa-1671db82e91f', 'cunhã', 'mulher', 'cunhã', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('22cb7886-4d3e-42e4-8e61-03ce95bf75cd', '1dccea0c-acec-48e7-8dfa-1671db82e91f');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('6ebed6c2-18c4-4c83-9e18-6c3735cb9009', 'curumim', 'menino, criança', 'curumim', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('22cb7886-4d3e-42e4-8e61-03ce95bf75cd', '6ebed6c2-18c4-4c83-9e18-6c3735cb9009');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('f661e461-553c-4115-a0fb-daee8c0adde3', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'O que significa a palavra "nambi" em português?', 'MULTIPLA_ESCOLHA', 'orelha', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f661e461-553c-4115-a0fb-daee8c0adde3', 'orelha');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f661e461-553c-4115-a0fb-daee8c0adde3', 'fruta, árvore');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('f661e461-553c-4115-a0fb-daee8c0adde3', 'sair');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('d056525d-e7ea-444e-a2b4-9b5deb2828c2', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'Como se diz "orelha" em Tupi?', 'MULTIPLA_ESCOLHA', 'nambi', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('d056525d-e7ea-444e-a2b4-9b5deb2828c2', 'anama');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('d056525d-e7ea-444e-a2b4-9b5deb2828c2', 'curumim');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('d056525d-e7ea-444e-a2b4-9b5deb2828c2', 'nambi');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('0b192b78-d901-4889-9e25-1de3e3a051a9', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'O que significa a palavra "îaboti" em português?', 'MULTIPLA_ESCOLHA', 'tartaruga', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0b192b78-d901-4889-9e25-1de3e3a051a9', 'mão');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0b192b78-d901-4889-9e25-1de3e3a051a9', 'Deus');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0b192b78-d901-4889-9e25-1de3e3a051a9', 'tartaruga');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('3a540abf-a819-4047-b480-9eddc4c02308', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'Como se diz "tartaruga" em Tupi?', 'MULTIPLA_ESCOLHA', 'îaboti', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('3a540abf-a819-4047-b480-9eddc4c02308', 'îaboti');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('3a540abf-a819-4047-b480-9eddc4c02308', 'igarapé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('3a540abf-a819-4047-b480-9eddc4c02308', 'pipoca');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('83fc3c6d-0a02-4acc-b0f6-7149d3662fd6', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'O que significa a palavra "cunhã" em português?', 'MULTIPLA_ESCOLHA', 'mulher', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('83fc3c6d-0a02-4acc-b0f6-7149d3662fd6', 'eu');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('83fc3c6d-0a02-4acc-b0f6-7149d3662fd6', 'Deus');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('83fc3c6d-0a02-4acc-b0f6-7149d3662fd6', 'mulher');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('054f6790-bc8e-4a29-890b-d0dd67be7b23', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'Como se diz "mulher" em Tupi?', 'MULTIPLA_ESCOLHA', 'cunhã', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('054f6790-bc8e-4a29-890b-d0dd67be7b23', 'oka');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('054f6790-bc8e-4a29-890b-d0dd67be7b23', 'cunhã');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('054f6790-bc8e-4a29-890b-d0dd67be7b23', 'sy');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('7056d949-9498-4b2b-8ca7-1fd41228a107', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'O que significa a palavra "curumim" em português?', 'MULTIPLA_ESCOLHA', 'menino, criança', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('7056d949-9498-4b2b-8ca7-1fd41228a107', 'menino, criança');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('7056d949-9498-4b2b-8ca7-1fd41228a107', 'fruta, árvore');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('7056d949-9498-4b2b-8ca7-1fd41228a107', 'ovo');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('1ac6792a-bfe1-45d0-8510-59e1b3870f91', '22cb7886-4d3e-42e4-8e61-03ce95bf75cd', 'Como se diz "menino, criança" em Tupi?', 'MULTIPLA_ESCOLHA', 'curumim', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('1ac6792a-bfe1-45d0-8510-59e1b3870f91', 'curumim');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('1ac6792a-bfe1-45d0-8510-59e1b3870f91', 'siri');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('1ac6792a-bfe1-45d0-8510-59e1b3870f91', 'arara');
+
+INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) VALUES ('9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'Lição 3: A Pausa Glotal ('')', 'Vamos entender a glotal com ka''a e outras palavras.', 3, '7a408268-260e-439b-8662-5c0136e790d9', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('9f214d73-fde7-43ef-8c3c-22a7f1edaa5d', 'ka''a', 'floresta', 'ca-Á', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('9a9a47a1-134b-4df0-bdd1-8c19b9dec266', '9f214d73-fde7-43ef-8c3c-22a7f1edaa5d');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('df39bf37-6070-436c-bed9-5bd223164194', 'pipoca', 'milho estourado', 'pipoca', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'df39bf37-6070-436c-bed9-5bd223164194');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('550143ee-4a0a-4bdc-a353-284e21132201', 'jaci', 'lua', 'jaci', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('9a9a47a1-134b-4df0-bdd1-8c19b9dec266', '550143ee-4a0a-4bdc-a353-284e21132201');
+INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em) VALUES ('260d1ce9-7b7c-4d4a-a881-b0fc1da65f78', 'guaraci', 'sol', 'guaraci', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('9a9a47a1-134b-4df0-bdd1-8c19b9dec266', '260d1ce9-7b7c-4d4a-a881-b0fc1da65f78');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('0cfd43b5-e836-4cec-933a-d929aa429af6', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'O que significa a palavra "ka''a" em português?', 'MULTIPLA_ESCOLHA', 'floresta', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0cfd43b5-e836-4cec-933a-d929aa429af6', 'floresta');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0cfd43b5-e836-4cec-933a-d929aa429af6', 'aldeia');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('0cfd43b5-e836-4cec-933a-d929aa429af6', 'família');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('92dfc293-7f63-4127-8b97-b98b96e14ee6', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'Como se diz "floresta" em Tupi?', 'MULTIPLA_ESCOLHA', 'ka''a', 10, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('92dfc293-7f63-4127-8b97-b98b96e14ee6', 'sy');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('92dfc293-7f63-4127-8b97-b98b96e14ee6', 'pipoca');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('92dfc293-7f63-4127-8b97-b98b96e14ee6', 'ka''a');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('99cb73e2-6c05-48df-939a-6d7f04db7bd9', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'O que significa a palavra "pipoca" em português?', 'MULTIPLA_ESCOLHA', 'milho estourado', 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('99cb73e2-6c05-48df-939a-6d7f04db7bd9', 'milho estourado');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('99cb73e2-6c05-48df-939a-6d7f04db7bd9', 'comedor de capim');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('99cb73e2-6c05-48df-939a-6d7f04db7bd9', 'família');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('a60facda-a22b-4482-9688-a8034f6205b1', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'Como se diz "milho estourado" em Tupi?', 'MULTIPLA_ESCOLHA', 'pipoca', 10, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('a60facda-a22b-4482-9688-a8034f6205b1', 'capivara');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('a60facda-a22b-4482-9688-a8034f6205b1', 'ixé');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('a60facda-a22b-4482-9688-a8034f6205b1', 'pipoca');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('ff4f6f3e-bc27-4718-823a-9829b21cdca9', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'O que significa a palavra "jaci" em português?', 'MULTIPLA_ESCOLHA', 'lua', 10, 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ff4f6f3e-bc27-4718-823a-9829b21cdca9', 'lua');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ff4f6f3e-bc27-4718-823a-9829b21cdca9', 'família');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('ff4f6f3e-bc27-4718-823a-9829b21cdca9', 'aldeia');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('45e03e14-24a2-444f-8a2c-553a829464f9', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'Como se diz "lua" em Tupi?', 'MULTIPLA_ESCOLHA', 'jaci', 10, 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('45e03e14-24a2-444f-8a2c-553a829464f9', 'siri');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('45e03e14-24a2-444f-8a2c-553a829464f9', 'ybá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('45e03e14-24a2-444f-8a2c-553a829464f9', 'jaci');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('876b8fe6-9b04-4516-819e-4a5c397d2334', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'O que significa a palavra "guaraci" em português?', 'MULTIPLA_ESCOLHA', 'sol', 10, 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('876b8fe6-9b04-4516-819e-4a5c397d2334', 'sol');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('876b8fe6-9b04-4516-819e-4a5c397d2334', 'família');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('876b8fe6-9b04-4516-819e-4a5c397d2334', 'siri');
+INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) VALUES ('5a9ee19e-95e2-44c6-8746-34425da34968', '9a9a47a1-134b-4df0-bdd1-8c19b9dec266', 'Como se diz "sol" em Tupi?', 'MULTIPLA_ESCOLHA', 'guaraci', 10, 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5a9ee19e-95e2-44c6-8746-34425da34968', 'guaraci');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5a9ee19e-95e2-44c6-8746-34425da34968', 'itá');
+INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('5a9ee19e-95e2-44c6-8746-34425da34968', 'ybá');
 
 
 -- ==========================================
--- 3. Módulos e Lições (Trilha 1)
+-- Conquistas
 -- ==========================================
--- Módulo 1 (Trilha 1)
-INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em)
-VALUES ('33333333-3333-3333-3333-333333333333', 'Módulo 1: Saudações', 'Aprenda como cumprimentar as pessoas.', 1, '22222222-2222-2222-2222-222222222222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO conquistas (id, titulo, descricao, icone, cor_base, meta_xp, meta_licoes, criado_em)
+VALUES ('88888888-8888-8888-8888-888888888881', 'Primeiro Passo', 'Conclua a sua primeira lição.', 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', '#4CAF50', 0, 1, CURRENT_TIMESTAMP);
 
--- Módulo 2 (Trilha 1)
-INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em)
-VALUES ('33333333-3333-3333-3333-333333333334', 'Módulo 2: Números', 'Aprenda a contar em Tupi-Guarani.', 2, '22222222-2222-2222-2222-222222222222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- Lição 1 (Módulo 1)
-INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em)
-VALUES ('44444444-4444-4444-4444-444444444441', 'Lição 1: Bom dia e Boa tarde', 'Nesta lição, você aprenderá as saudações iniciais.', 1, '33333333-3333-3333-3333-333333333333', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- Lição 2 (Módulo 1)
-INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em)
-VALUES ('44444444-4444-4444-4444-444444444442', 'Lição 2: Despedidas', 'Como dizer tchau e até logo.', 2, '33333333-3333-3333-3333-333333333333', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- Lição 1 (Módulo 2)
-INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em)
-VALUES ('44444444-4444-4444-4444-444444444443', 'Lição 1: De 1 a 5', 'Contando os primeiros números.', 1, '33333333-3333-3333-3333-333333333334', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-
--- ==========================================
--- 4. Módulos e Lições (Trilha 2)
--- ==========================================
-INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em)
-VALUES ('33333333-3333-3333-3333-333333333335', 'Módulo 1: Natureza', 'Nomes de animais e plantas.', 1, '22222222-2222-2222-2222-222222222223', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em)
-VALUES ('44444444-4444-4444-4444-444444444444', 'Lição 1: Animais', 'Conheça onça, jacaré e outros.', 1, '33333333-3333-3333-3333-333333333335', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-
--- ==========================================
--- 5. Conteúdos Linguísticos (Palavras/Frases)
--- ==========================================
-INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em)
-VALUES ('55555555-5555-5555-5555-555555555551', 'Ko''ẽ porã', 'Bom dia', 'ko-ẽ po-rã', 'FRASE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em)
-VALUES ('55555555-5555-5555-5555-555555555552', 'Ka''aru porã', 'Boa tarde', 'ka-a-ru po-rã', 'FRASE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO conteudos_linguisticos (id, palavra_tupi, traducao_ptbr, fonetica, tipo, criado_em, atualizado_em)
-VALUES ('55555555-5555-5555-5555-555555555553', 'Jaguarete', 'Onça', 'ja-gua-re-te', 'PALAVRA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- Vinculando Conteúdos às Lições
-INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('44444444-4444-4444-4444-444444444441', '55555555-5555-5555-5555-555555555551');
-INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('44444444-4444-4444-4444-444444444441', '55555555-5555-5555-5555-555555555552');
-INSERT INTO licao_conteudo (licao_id, conteudo_id) VALUES ('44444444-4444-4444-4444-444444444444', '55555555-5555-5555-5555-555555555553');
-
-
--- ==========================================
--- 6. Exercícios
--- ==========================================
-INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em)
-VALUES ('66666666-6666-6666-6666-666666666661', '44444444-4444-4444-4444-444444444441', 'Como se diz "Bom dia" em Potiguara?', 'MULTIPLA_ESCOLHA', 'Ko''ẽ porã', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('66666666-6666-6666-6666-666666666661', 'Ko''ẽ porã');
-INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('66666666-6666-6666-6666-666666666661', 'Ka''aru porã');
-INSERT INTO exercicio_opcoes (exercicio_id, opcao) VALUES ('66666666-6666-6666-6666-666666666661', 'Pyhare porã');
-
-
--- ==========================================
--- 7. Progresso do Usuário (Para testar o Dashboard de Progresso)
--- ==========================================
--- O usuário já concluiu as duas primeiras lições da Trilha 1
-INSERT INTO progresso_usuario_licao (id, usuario_id, licao_id, data_conclusao)
-VALUES ('77777777-7777-7777-7777-777777777771', '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444441', CURRENT_TIMESTAMP - INTERVAL '2 days');
-
-INSERT INTO progresso_usuario_licao (id, usuario_id, licao_id, data_conclusao)
-VALUES ('77777777-7777-7777-7777-777777777772', '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444442', CURRENT_TIMESTAMP - INTERVAL '1 days');
-
--- Progresso do Maxuel
-INSERT INTO progresso_usuario_licao (id, usuario_id, licao_id, data_conclusao)
-VALUES ('77777777-7777-7777-7777-777777777773', '11111111-1111-1111-1111-111111111112', '44444444-4444-4444-4444-444444444441', CURRENT_TIMESTAMP - INTERVAL '3 days');
-
-INSERT INTO progresso_usuario_licao (id, usuario_id, licao_id, data_conclusao)
-VALUES ('77777777-7777-7777-7777-777777777774', '11111111-1111-1111-1111-111111111112', '44444444-4444-4444-4444-444444444442', CURRENT_TIMESTAMP - INTERVAL '2 days');
-
-INSERT INTO progresso_usuario_licao (id, usuario_id, licao_id, data_conclusao)
-VALUES ('77777777-7777-7777-7777-777777777775', '11111111-1111-1111-1111-111111111112', '44444444-4444-4444-4444-444444444443', CURRENT_TIMESTAMP - INTERVAL '1 days');
-
-
--- ==========================================
--- 8. Conquistas
--- ==========================================
-INSERT INTO conquistas (id, titulo, descricao, icone_url, meta_xp, meta_licoes, criado_em)
-VALUES ('88888888-8888-8888-8888-888888888881', 'Primeiro Passo', 'Conclua a sua primeira lição.', 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', 0, 1, CURRENT_TIMESTAMP);
-
-INSERT INTO conquistas (id, titulo, descricao, icone_url, meta_xp, meta_licoes, criado_em)
-VALUES ('88888888-8888-8888-8888-888888888882', 'Guerreiro Tupi', 'Acumule 1000 XP.', 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', 1000, 0, CURRENT_TIMESTAMP);
-
-INSERT INTO conquistas (id, titulo, descricao, icone_url, meta_xp, meta_licoes, criado_em)
-VALUES ('88888888-8888-8888-8888-888888888883', 'Semana Perfeita', 'Mantenha uma ofensiva de 7 dias.', 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', 0, 0, CURRENT_TIMESTAMP);
-
-INSERT INTO conquistas (id, titulo, descricao, icone_url, meta_xp, meta_licoes, criado_em)
-VALUES ('88888888-8888-8888-8888-888888888884', 'Poliglota', 'Conclua 50 lições.', 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', 0, 50, CURRENT_TIMESTAMP);
-
--- Vinculando Conquistas ao Maxuel
-INSERT INTO usuario_conquistas (id, usuario_id, conquista_id, data_obtencao)
-VALUES ('99999999-9999-9999-9999-999999999991', '11111111-1111-1111-1111-111111111112', '88888888-8888-8888-8888-888888888881', CURRENT_TIMESTAMP);
-
-INSERT INTO usuario_conquistas (id, usuario_id, conquista_id, data_obtencao)
-VALUES ('99999999-9999-9999-9999-999999999992', '11111111-1111-1111-1111-111111111112', '88888888-8888-8888-8888-888888888882', CURRENT_TIMESTAMP);
-
-INSERT INTO usuario_conquistas (id, usuario_id, conquista_id, data_obtencao)
-VALUES ('99999999-9999-9999-9999-999999999993', '11111111-1111-1111-1111-111111111112', '88888888-8888-8888-8888-888888888883', CURRENT_TIMESTAMP);
+INSERT INTO conquistas (id, titulo, descricao, icone, cor_base, meta_xp, meta_licoes, criado_em)
+VALUES ('88888888-8888-8888-8888-888888888882', 'Guerreiro Tupi', 'Acumule 1000 XP.', 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', '#FFC107', 1000, 0, CURRENT_TIMESTAMP);
