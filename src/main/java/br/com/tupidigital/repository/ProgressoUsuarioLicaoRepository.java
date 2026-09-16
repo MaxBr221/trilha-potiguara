@@ -11,4 +11,9 @@ import java.util.UUID;
 public interface ProgressoUsuarioLicaoRepository extends JpaRepository<ProgressoUsuarioLicao, UUID> {
     Optional<ProgressoUsuarioLicao> findByUsuarioIdAndLicaoId(UUID usuarioId, UUID licaoId);
     boolean existsByUsuarioIdAndLicaoId(UUID usuarioId, UUID licaoId);
+    
+    long countByUsuarioId(UUID usuarioId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM ProgressoUsuarioLicao p WHERE p.usuario.id = :usuarioId AND p.licao.modulo.trilha.id = :trilhaId")
+    long countByUsuarioIdAndTrilhaId(@org.springframework.data.repository.query.Param("usuarioId") UUID usuarioId, @org.springframework.data.repository.query.Param("trilhaId") UUID trilhaId);
 }

@@ -22,6 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
+    @org.springframework.web.bind.annotation.GetMapping("/hash")
+    public String getHash(@org.springframework.web.bind.annotation.RequestParam String pwd) {
+        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode(pwd);
+    }
+
+
     @Autowired
     private AuthenticationManager authenticationManager;
 

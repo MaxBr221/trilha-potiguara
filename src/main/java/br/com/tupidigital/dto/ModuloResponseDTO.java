@@ -12,18 +12,12 @@ public record ModuloResponseDTO(
         Boolean estaBloqueada,
         List<LicaoResponseDTO> lessons
 ) {
-    public static ModuloResponseDTO fromEntity(Modulo modulo) {
-        List<LicaoResponseDTO> lessonsDTO = modulo.getLicoes() != null ? 
-                modulo.getLicoes().stream()
-                      .map(LicaoResponseDTO::fromEntity)
-                      .collect(Collectors.toList()) : 
-                List.of();
-                
+    public static ModuloResponseDTO fromEntity(Modulo modulo, boolean estaBloqueada, List<LicaoResponseDTO> lessonsDTO) {
         return new ModuloResponseDTO(
                 modulo.getId(),
                 modulo.getTitulo(),
                 modulo.getDescricao(),
-                false, // mock estaBloqueada
+                estaBloqueada,
                 lessonsDTO
         );
     }

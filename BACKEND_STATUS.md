@@ -34,14 +34,14 @@ Este documento centraliza o progresso, as decisões de arquitetura e o estado at
   - `GET /api/v1/licoes/{id}`: Detalha uma lição específica.
 - *Nota sobre Front-end:* Alguns campos puramente gráficos (`icon`, `corBase`, `estaBloqueada`) e a checagem de progresso/estado estão mockados via DTO para desbloquear o front-end, enquanto os cálculos dinâmicos não são implementados.
 
-### ⏳ Etapa 4: Exercícios e Validação de Respostas (Próximo Passo)
-- **A fazer:** Criar entidade `Exercicio` e gerenciar as perguntas/respostas de cada lição. O backend deve receber a resposta e validá-la, devolvendo se foi acerto/erro e emitindo a quantidade de XP.
+### ✅ Etapa 4: Exercícios e Validação de Respostas (Concluído)
+- **Feito:** Entidade `Exercicio` criada para gerenciar as perguntas/respostas de cada lição. O backend recebe a resposta e valida, devolvendo se foi acerto/erro e emitindo a quantidade de XP ganha pelo usuário logado.
 
-### ⏳ Etapa 5: Pontuação (XP), Progresso e Sequência (Streak) (Pendente)
-- **A fazer:** Atualizar o registro do `Usuario` dinamicamente conforme os exercícios são resolvidos. Gerenciar a sequência contínua (streak de dias) quando o usuário conclui uma lição com base em timestamps.
+### ✅ Etapa 5: Pontuação (XP), Progresso e Sequência (Streak) (Concluído)
+- **Feito:** Atualização do registro do `Usuario` dinamicamente conforme os exercícios são resolvidos. Criada a entidade `ProgressoUsuarioLicao` e o endpoint de conclusão de lição (`/api/v1/licoes/{id}/concluir`) para gerenciar a sequência contínua (streak) e o histórico de conclusão.
 
-### ⏳ Etapa 6: Administração e Conteúdo Linguístico (Pendente)
-- **A fazer:** Entidades para `ConteudoLinguistico` (Palavras/Frases Tupi, traduções, fonética) e um grupo de endpoints administrativos para cadastrar e vincular esses conteúdos de forma persistente.
+### ✅ Etapa 6: Administração e Conteúdo Linguístico (Concluído)
+- **Feito:** Entidades para `ConteudoLinguistico` (Palavras/Frases Tupi, traduções, fonética) criadas, incluindo repositórios, DTOs e serviços correspondentes. Implementados os endpoints administrativos para cadastrar conteúdos e vincular às lições, com relacionamento `@ManyToMany`.
 
 ---
 
@@ -52,4 +52,4 @@ Para alinhar rapidamente com os Mocks do Front-end, o back-end injetou alguns da
 - `LicaoResponseDTO`: `estaConcluida`, `type` (sempre retorna "learning").
 
 ---
-**Última Atualização:** Alinhamento de DTOs e Contratos com o Frontend concluído. O foco atual deve pular para a **Etapa 4 (Exercícios e Respostas)**.
+**Última Atualização:** Implementação de Conteúdo Linguístico finalizada (Etapa 6). Os endpoints base para administrar o vocabulário e associar às lições estão prontos. O próximo foco será conectar o front-end aos dados reais ou revisar as pendências de Mock.

@@ -9,12 +9,12 @@ public record LicaoResponseDTO(
         Boolean estaConcluida,
         String type
 ) {
-    public static LicaoResponseDTO fromEntity(Licao licao) {
+    public static LicaoResponseDTO fromEntity(Licao licao, boolean estaConcluida) {
         return new LicaoResponseDTO(
                 licao.getId(),
                 licao.getTitulo(),
-                false, // mock estaConcluida
-                "learning" // mock type
+                estaConcluida,
+                "learning" // type mantido estático como learning
         );
     }
 }

@@ -11,39 +11,33 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "licoes")
+@Table(name = "conteudos_linguisticos")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(of = "id")
-public class Licao {
+public class ConteudoLinguistico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String titulo;
+    @Column(name = "palavra_tupi", nullable = false)
+    private String palavraTupi;
 
-    @Column(columnDefinition = "TEXT")
-    private String descricao;
+    @Column(name = "traducao_ptbr", nullable = false)
+    private String traducaoPtBr;
 
-    @Column(name = "ordem_index", nullable = false)
-    private Integer ordemIndex;
+    @Column(name = "fonetica")
+    private String fonetica;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modulo_id", nullable = false)
-    private Modulo modulo;
+    @Column(name = "tipo", nullable = false, length = 20)
+    private String tipo; // e.g., PALAVRA, FRASE
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "licao_conteudo",
-        joinColumns = @JoinColumn(name = "licao_id"),
-        inverseJoinColumns = @JoinColumn(name = "conteudo_id")
-    )
-    private Set<ConteudoLinguistico> conteudos = new HashSet<>();
+    @ManyToMany(mappedBy = "conteudos", fetch = FetchType.LAZY)
+    private Set<Licao> licoes = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
