@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,9 @@ public class Usuario implements UserDetails {
 
     @Column(name = "sequencia_atual", nullable = false)
     private Integer sequenciaAtual = 0;
+
+    @Column(name = "ultima_atividade")
+    private LocalDate ultimaAtividade;
 
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
@@ -88,7 +92,7 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
-    public Usuario(UUID id, String nome, String email, String senha, Perfil perfil, Integer xp, Integer sequenciaAtual, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
+    public Usuario(UUID id, String nome, String email, String senha, Perfil perfil, Integer xp, Integer sequenciaAtual, LocalDate ultimaAtividade, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -96,6 +100,7 @@ public class Usuario implements UserDetails {
         this.perfil = perfil;
         this.xp = xp;
         this.sequenciaAtual = sequenciaAtual;
+        this.ultimaAtividade = ultimaAtividade;
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
     }
@@ -121,6 +126,9 @@ public class Usuario implements UserDetails {
 
     public Integer getSequenciaAtual() { return sequenciaAtual; }
     public void setSequenciaAtual(Integer sequenciaAtual) { this.sequenciaAtual = sequenciaAtual; }
+
+    public LocalDate getUltimaAtividade() { return ultimaAtividade; }
+    public void setUltimaAtividade(LocalDate ultimaAtividade) { this.ultimaAtividade = ultimaAtividade; }
 
     public LocalDateTime getCriadoEm() { return criadoEm; }
     public void setCriadoEm(LocalDateTime criadoEm) { this.criadoEm = criadoEm; }

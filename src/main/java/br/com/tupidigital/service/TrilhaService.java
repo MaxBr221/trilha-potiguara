@@ -19,6 +19,7 @@ import br.com.tupidigital.entity.Modulo;
 import br.com.tupidigital.entity.Licao;
 import br.com.tupidigital.entity.ProgressoUsuarioLicao;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 @Service
 public class TrilhaService {
@@ -145,8 +146,19 @@ public class TrilhaService {
         
         progressoUsuarioLicaoRepository.save(progresso);
 
-        // Aumentar ofensiva (incrementa se for concluída a lição)
-        usuario.setSequenciaAtual(usuario.getSequenciaAtual() + 1);
+        // Aumentar ofensiva (incrementa se for concluída a lição no dia)
+        LocalDate hoje = LocalDate.now();
+        LocalDate ultimaAtividade = usuario.getUltimaAtividade();
+
+        if (ultimaAtividade == null || ultimaAtividade.isBefore(hoje.minusDays(1))) {
+            usuario.setSequenciaAtual(1);
+            usuario.setUltimaAtividade(hoje);
+        } else if (ultimaAtividade.isEqual(hoje.minusDays(1))) {
+            usuario.setSequenciaAtual(usuario.getSequenciaAtual() + 1);
+            usuario.setUltimaAtividade(hoje);
+        } else if (ultimaAtividade.isEqual(hoje)) {
+            // já contabilizou ofensiva hoje, não faz nada com a sequência
+        }
         usuarioRepository.save(usuario);
 
         // Lógica de Conquistas (MVP)
