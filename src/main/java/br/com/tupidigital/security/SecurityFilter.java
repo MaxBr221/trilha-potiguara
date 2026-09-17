@@ -30,13 +30,20 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         
         if (token != null) {
-            var email = tokenService.extractUsername(token);
-            UserDetails user = usuarioRepository.findByEmail(email);
+            try {
+                var email = tokenService.extractUsername(token);
+                UserDetails user = usuarioRepository.findByEmail(email);
 
-            if (user != null && tokenService.isTokenValid(token, (Usuario) user)) {
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (user != null && tokenService.isTokenValid(token, (Usuario) user)) {
+                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception e) {
+                // Log and ignore exception so the filter chain continues.
+                // The request will be treated as unauthenticated (resulting in 401/403),
+                // and CORS headers will still be properly applied.
+                System.out.println("Invalid or expired JWT token: " + e.getMessage());
             }
         }
         filterChain.doFilter(request, response);

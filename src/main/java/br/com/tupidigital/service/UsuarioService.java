@@ -88,9 +88,18 @@ public class UsuarioService {
                 })
                 .collect(Collectors.toList());
         
+        int sequenciaReal = usuario.getSequenciaAtual();
+        java.time.LocalDate hoje = java.time.LocalDate.now();
+        java.time.LocalDate ultimaAtividade = usuario.getUltimaAtividade();
+
+        // Se o usuário não acessou ontem nem hoje, a ofensiva já foi perdida
+        if (ultimaAtividade != null && ultimaAtividade.isBefore(hoje.minusDays(1))) {
+            sequenciaReal = 0;
+        }
+        
         return new DashboardResponseDTO(
                 usuario.getXp(),
-                usuario.getSequenciaAtual(),
+                sequenciaReal,
                 (int) licoesConcluidas,
                 taxaAcerto,
                 conquistasDTO

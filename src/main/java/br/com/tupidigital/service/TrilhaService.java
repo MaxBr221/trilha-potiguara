@@ -134,19 +134,7 @@ public class TrilhaService {
         Licao licao = licaoRepository.findById(licaoId)
                 .orElseThrow(() -> new RuntimeException("Lição não encontrada"));
 
-        if (progressoUsuarioLicaoRepository.existsByUsuarioIdAndLicaoId(usuario.getId(), licao.getId())) {
-            // Já concluída
-            return;
-        }
-
-        ProgressoUsuarioLicao progresso = ProgressoUsuarioLicao.builder()
-                .usuario(usuario)
-                .licao(licao)
-                .build();
-        
-        progressoUsuarioLicaoRepository.save(progresso);
-
-        // Aumentar ofensiva (incrementa se for concluída a lição no dia)
+        // Aumentar ofensiva (incrementa se for concluída a lição no dia, mesmo que repetida)
         LocalDate hoje = LocalDate.now();
         LocalDate ultimaAtividade = usuario.getUltimaAtividade();
 
@@ -160,6 +148,18 @@ public class TrilhaService {
             // já contabilizou ofensiva hoje, não faz nada com a sequência
         }
         usuarioRepository.save(usuario);
+
+        if (progressoUsuarioLicaoRepository.existsByUsuarioIdAndLicaoId(usuario.getId(), licao.getId())) {
+            // Já concluída a nível de lição inédita
+            return;
+        }
+
+        ProgressoUsuarioLicao progresso = ProgressoUsuarioLicao.builder()
+                .usuario(usuario)
+                .licao(licao)
+                .build();
+        
+        progressoUsuarioLicaoRepository.save(progresso);
 
         // Lógica de Conquistas (MVP)
         checarEAtribuirConquista(usuario, "Primeiros Passos");
