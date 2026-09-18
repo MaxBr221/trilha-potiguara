@@ -14,17 +14,17 @@ public record TrilhaResponseDTO(
         String corBase,
         Boolean estaBloqueada
 ) {
-    public static TrilhaResponseDTO fromEntity(Trilha trilha, int quantidadeModulos, int progresso) {
+    public static TrilhaResponseDTO fromEntity(Trilha trilha, int quantidadeModulos, int progresso, int nivel, boolean estaBloqueada) {
         return new TrilhaResponseDTO(
                 trilha.getId(),
                 trilha.getNome(),
                 trilha.getDescricao(),
-                progresso, // valor real calculado
-                1, // mock nivel (ainda mockado, pois requer regra de xp por trilha)
+                progresso,
+                nivel,
                 quantidadeModulos,
-                "🌿", // mock icon
-                "emerald", // mock corBase
-                false // mock estaBloqueada
+                trilha.getIcon(),
+                trilha.getCorBase(),
+                estaBloqueada
         );
     }
 }

@@ -40,9 +40,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (Exception e) {
-                // Log and ignore exception so the filter chain continues.
-                // The request will be treated as unauthenticated (resulting in 401/403),
-                // and CORS headers will still be properly applied.
                 System.out.println("Invalid or expired JWT token: " + e.getMessage());
             }
         }

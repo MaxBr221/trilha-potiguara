@@ -62,8 +62,9 @@ public class TrilhaService {
                             .mapToLong(m -> m.getLicoes() != null ? m.getLicoes().size() : 0).sum() : 0;
                     
                     int progresso = totalLicoes == 0 ? 0 : (int) ((licoesConcluidas * 100) / totalLicoes);
-                    
-                    return TrilhaResponseDTO.fromEntity(t, quantidadeModulos, progresso);
+                    int nivel = usuario != null ? (usuario.getXp() / 100) + 1 : 1;
+                    boolean estaBloqueada = false;
+                    return TrilhaResponseDTO.fromEntity(t, quantidadeModulos, progresso, nivel, estaBloqueada);
                 })
                 .collect(Collectors.toList());
     }
