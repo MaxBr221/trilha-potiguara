@@ -1,31 +1,17 @@
 -- ==========================================
--- V22: Correção de Saudações (Lição 1) e Adição de Despedidas (Lição 2) - Trilha Potiguara
+-- V11: Correção de Saudações (Lição 1) e Adição de Despedidas (Lição 2) - Trilha Potiguara
 -- ==========================================
-
--- 0. Garantir que o Módulo e as Lições originais existam (podem ter sido deletados por scripts anteriores)
-INSERT INTO modulos (id, titulo, descricao, ordem_index, trilha_id, criado_em, atualizado_em) 
-VALUES ('33333333-3333-3333-3333-333333333333', 'Módulo 1: Saudações', 'Aprenda como cumprimentar as pessoas.', 1, '22222222-2222-2222-2222-222222222222', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) 
-VALUES ('44444444-4444-4444-4444-444444444441', 'Lição 1: Bom dia e Boa tarde', 'Nesta lição, você aprenderá as saudações iniciais.', 1, '33333333-3333-3333-3333-333333333333', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO licoes (id, titulo, descricao, ordem_index, modulo_id, criado_em, atualizado_em) 
-VALUES ('44444444-4444-4444-4444-444444444442', 'Lição 2: Despedidas', 'Como dizer tchau e até logo.', 2, '33333333-3333-3333-3333-333333333333', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-ON CONFLICT (id) DO NOTHING;
 
 -- ------------------------------------------
 -- 1. Lição 1: Saudações (ID: 44444444-4444-4444-4444-444444444441)
 -- ------------------------------------------
 
 -- 1.1 Correção do Exercício de "Bom dia" (Existente)
-INSERT INTO exercicios (id, licao_id, enunciado, tipo, resposta_correta, pontuacao_xp, ordem_index, criado_em, atualizado_em) 
-VALUES ('66666666-6666-6666-6666-666666666661', '44444444-4444-4444-4444-444444444441', 'Como se diz "Bom dia" em Potiguara?', 'MULTIPLA_ESCOLHA', 'Tîa nde koema', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-ON CONFLICT (id) DO UPDATE SET 
-    enunciado = 'Como se diz "Bom dia" em Potiguara?',
+UPDATE exercicios 
+SET enunciado = 'Como se diz "Bom dia" em Potiguara?',
     resposta_correta = 'Tîa nde koema',
-    atualizado_em = CURRENT_TIMESTAMP;
+    atualizado_em = CURRENT_TIMESTAMP
+WHERE id = '66666666-6666-6666-6666-666666666661';
 
 -- Limpar as opções erradas do exercício de Bom dia
 DELETE FROM exercicio_opcoes WHERE exercicio_id = '66666666-6666-6666-6666-666666666661';
