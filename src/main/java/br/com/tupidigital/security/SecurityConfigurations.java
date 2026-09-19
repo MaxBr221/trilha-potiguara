@@ -36,6 +36,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight requests
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/esqueci-senha").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/redefinir-senha").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/trilhas/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/licoes/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/exercicios/**").permitAll()

@@ -23,6 +23,16 @@ public class TrilhaController {
         return ResponseEntity.ok(trilhaService.listarTrilhas());
     }
 
+    @GetMapping("/trilhas/slug/{slug}")
+    public ResponseEntity<TrilhaResponseDTO> obterTrilhaPorSlug(@PathVariable String slug) {
+        return ResponseEntity.ok(trilhaService.obterTrilhaPorSlug(slug));
+    }
+
+    @GetMapping("/trilhas/slug/{slug}/modulos")
+    public ResponseEntity<List<ModuloResponseDTO>> listarModulosPorSlug(@PathVariable String slug) {
+        return ResponseEntity.ok(trilhaService.listarModulosPorTrilhaSlug(slug));
+    }
+
     @GetMapping("/trilhas/{trailId}/modulos")
     public ResponseEntity<List<ModuloResponseDTO>> listarModulos(@PathVariable UUID trailId) {
         return ResponseEntity.ok(trilhaService.listarModulosPorTrilha(trailId));

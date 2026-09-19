@@ -69,6 +69,32 @@ public class TrilhaService {
                 .collect(Collectors.toList());
     }
 
+    public TrilhaResponseDTO obterTrilhaPorSlug(String slug) {
+        Usuario usuario = getAuthenticatedUsuario();
+        return trilhaRepository.findBySlug(slug)
+                .map(t -> {
+                    int quantidadeModulos = t.getModulos() != null ? t.getModulos().size() : 0;
+                    long licoesConcluidas = 0;
+                    if (usuario != null) {
+                        licoesConcluidas = progressoUsuarioLicaoRepository.countByUsuarioIdAndTrilhaId(usuario.getId(), t.getId());
+                    }
+                    long totalLicoes = t.getModulos() != null ? t.getModulos().stream()
+                            .mapToLong(m -> m.getLicoes() != null ? m.getLicoes().size() : 0).sum() : 0;
+                    
+                    int progresso = totalLicoes == 0 ? 0 : (int) ((licoesConcluidas * 100) / totalLicoes);
+                    int nivel = usuario != null ? (usuario.getXp() / 100) + 1 : 1;
+                    boolean estaBloqueada = false;
+                    return TrilhaResponseDTO.fromEntity(t, quantidadeModulos, progresso, nivel, estaBloqueada);
+                })
+                .orElseThrow(() -> new RuntimeException("Trilha não encontrada com o slug: " + slug));
+    }
+
+    public List<ModuloResponseDTO> listarModulosPorTrilhaSlug(String slug) {
+        br.com.tupidigital.entity.Trilha trilha = trilhaRepository.findBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("Trilha não encontrada com o slug: " + slug));
+        return listarModulosPorTrilha(trilha.getId());
+    }
+
     public List<ModuloResponseDTO> listarModulosPorTrilha(UUID trilhaId) {
         Usuario usuario = getAuthenticatedUsuario();
         List<Modulo> modulos = moduloRepository.findByTrilhaIdOrderByOrdemIndexAsc(trilhaId);

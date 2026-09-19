@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.text.Normalizer;
+import java.util.Locale;
 
 @Entity
 @Table(name = "trilhas")
@@ -25,6 +27,9 @@ public class Trilha {
 
     @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, unique = true)
+    private String slug;
 
     @Column(columnDefinition = "TEXT")
     private String descricao;
@@ -52,4 +57,19 @@ public class Trilha {
     @UpdateTimestamp
     @Column(name = "atualizado_em", nullable = false)
     private LocalDateTime atualizadoEm;
+
+    @PrePersist
+    @PreUpdate
+    public void generateSlug() {
+        if (this.slug == null || this.slug.trim().isEmpty()) {
+            if (this.nome != null) {
+                String normalized = Normalizer.normalize(this.nome, Normalizer.Form.NFD);
+                this.slug = normalized.replaceAll("\\p{M}", "") // remove accents
+                                      .toLowerCase(Locale.ROOT)
+                                      .replaceAll("[^a-z0-9\\s-]", "") // remove special chars
+                                      .trim()
+                                      .replaceAll("\\s+", "-"); // replace spaces with hyphens
+            }
+        }
+    }
 }

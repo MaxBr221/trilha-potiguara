@@ -38,7 +38,7 @@ public class ImportadorDicionarioService implements CommandLineRunner {
             }
 
             long count = repository.count();
-            if (count > 0) {
+            if (count > 2000) {
                 log.info("Banco de dados já contém {} registros de conteúdo linguístico. Importação ignorada.", count);
                 return;
             }
@@ -47,11 +47,15 @@ public class ImportadorDicionarioService implements CommandLineRunner {
                 List<Map<String, String>> palavras = objectMapper.readValue(is, new TypeReference<List<Map<String, String>>>() {});
                 
                 for (Map<String, String> p : palavras) {
+                    String categoria = p.getOrDefault("categoria", "PALAVRA").toUpperCase();
+                    if (categoria.length() > 20) {
+                        categoria = categoria.substring(0, 20);
+                    }
                     ConteudoLinguisticoRequestDTO dto = ConteudoLinguisticoRequestDTO.builder()
                             .palavraTupi(p.get("palavra"))
                             .traducaoPtBr(p.get("traducao"))
                             .fonetica(p.getOrDefault("fonetica", ""))
-                            .tipo(p.getOrDefault("categoria", "PALAVRA").toUpperCase())
+                            .tipo(categoria)
                             .build();
                     
                     conteudoLinguisticoService.criar(dto);

@@ -6,6 +6,7 @@ import java.util.UUID;
 public record TrilhaResponseDTO(
         UUID id,
         String title,
+        String slug,
         String description,
         Integer progresso,
         Integer nivel,
@@ -18,6 +19,7 @@ public record TrilhaResponseDTO(
         return new TrilhaResponseDTO(
                 trilha.getId(),
                 trilha.getNome(),
+                trilha.getSlug(),
                 trilha.getDescricao(),
                 progresso,
                 nivel,

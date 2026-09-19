@@ -40,6 +40,12 @@ public class AuthenticationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private br.com.tupidigital.repository.TokenRecuperacaoSenhaRepository tokenRecuperacaoSenhaRepository;
+
+    @Autowired
+    private br.com.tupidigital.service.EmailService emailService;
+
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid LoginRequestDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
@@ -79,6 +85,48 @@ public class AuthenticationController {
 
         this.repository.save(newUsuario);
 
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/esqueci-senha")
+    public ResponseEntity<Void> esqueciSenha(@RequestBody br.com.tupidigital.dto.EsqueciSenhaDTO data) {
+        Usuario usuario = (Usuario) repository.findByEmail(data.email());
+        if (usuario != null) {
+            String token = java.util.UUID.randomUUID().toString();
+            
+            br.com.tupidigital.entity.TokenRecuperacaoSenha tokenEntity = new br.com.tupidigital.entity.TokenRecuperacaoSenha();
+            tokenEntity.setToken(token);
+            tokenEntity.setUsuario(usuario);
+            tokenEntity.setDataExpiracao(java.time.LocalDateTime.now().plusHours(2));
+            
+            tokenRecuperacaoSenhaRepository.save(tokenEntity);
+            
+            emailService.enviarEmail(data.email(), "Recuperação de Senha - Tupi Digital", "Você solicitou a recuperação de senha.\n\nCopie o código a seguir e cole no aplicativo para redefinir sua senha:\n\n" + token);
+        }
+        
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/redefinir-senha")
+    public ResponseEntity<Void> redefinirSenha(@RequestBody br.com.tupidigital.dto.RedefinirSenhaDTO data) {
+        java.util.Optional<br.com.tupidigital.entity.TokenRecuperacaoSenha> optionalToken = tokenRecuperacaoSenhaRepository.findByToken(data.token());
+        
+        if (optionalToken.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        br.com.tupidigital.entity.TokenRecuperacaoSenha tokenEntity = optionalToken.get();
+        
+        if (tokenEntity.getDataExpiracao().isBefore(java.time.LocalDateTime.now())) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        Usuario usuario = tokenEntity.getUsuario();
+        usuario.setSenha(passwordEncoder.encode(data.novaSenha()));
+        repository.save(usuario);
+        
+        tokenRecuperacaoSenhaRepository.delete(tokenEntity);
+        
         return ResponseEntity.ok().build();
     }
 }
