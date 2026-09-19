@@ -26,6 +26,8 @@ public class TokenService {
     public String generateToken(Usuario usuario) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("role", usuario.getPerfil().name());
+        extraClaims.put("id", usuario.getId().toString());
+        extraClaims.put("nome", usuario.getNome());
         
         return Jwts
                 .builder()

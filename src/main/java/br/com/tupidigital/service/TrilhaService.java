@@ -188,18 +188,9 @@ public class TrilhaService {
         
         progressoUsuarioLicaoRepository.save(progresso);
 
-        // Lógica de Conquistas (MVP)
-        checarEAtribuirConquista(usuario, "Primeiros Passos");
-        
-        if (usuario.getSequenciaAtual() >= 7) {
-            checarEAtribuirConquista(usuario, "Fogo Inicial");
-        }
-        
-        // Verifica se concluiu o módulo 1 (Explorador Nato) - simplificado para: tem >= 3 lições
+        // Lógica de Conquistas Dinâmicas
         long licoesConcluidas = progressoUsuarioLicaoRepository.countByUsuarioId(usuario.getId());
-        if (licoesConcluidas >= 3) {
-            checarEAtribuirConquista(usuario, "Explorador Nato");
-        }
+        verificarTodasAsConquistas(usuario, licoesConcluidas);
     }
 
     @Autowired
@@ -208,16 +199,25 @@ public class TrilhaService {
     @Autowired
     private br.com.tupidigital.repository.UsuarioConquistaRepository usuarioConquistaRepository;
 
-    private void checarEAtribuirConquista(Usuario usuario, String tituloConquista) {
-        br.com.tupidigital.entity.Conquista conquista = conquistaRepository.findAll().stream()
-                .filter(c -> c.getTitulo().equalsIgnoreCase(tituloConquista))
-                .findFirst().orElse(null);
-
-        if (conquista != null) {
-            boolean jaPossui = usuarioConquistaRepository.findByUsuarioId(usuario.getId()).stream()
-                    .anyMatch(uc -> uc.getConquista().getId().equals(conquista.getId()));
+    private void verificarTodasAsConquistas(Usuario usuario, long licoesConcluidas) {
+        List<br.com.tupidigital.entity.Conquista> conquistas = conquistaRepository.findAll();
+        List<br.com.tupidigital.entity.UsuarioConquista> jaPossui = usuarioConquistaRepository.findByUsuarioId(usuario.getId());
+        
+        for (br.com.tupidigital.entity.Conquista conquista : conquistas) {
+            boolean possui = jaPossui.stream().anyMatch(uc -> uc.getConquista().getId().equals(conquista.getId()));
+            if (possui) continue;
             
-            if (!jaPossui) {
+            boolean atingiu = false;
+            
+            if (conquista.getMetaXp() != null && conquista.getMetaXp() > 0) {
+                if (usuario.getXp() >= conquista.getMetaXp()) atingiu = true;
+            } else if (conquista.getMetaLicoes() != null && conquista.getMetaLicoes() > 0) {
+                if (licoesConcluidas >= conquista.getMetaLicoes()) atingiu = true;
+            } else if (conquista.getMetaOfensiva() != null && conquista.getMetaOfensiva() > 0) {
+                if (usuario.getSequenciaAtual() >= conquista.getMetaOfensiva()) atingiu = true;
+            }
+            
+            if (atingiu) {
                 br.com.tupidigital.entity.UsuarioConquista uc = new br.com.tupidigital.entity.UsuarioConquista();
                 uc.setUsuario(usuario);
                 uc.setConquista(conquista);

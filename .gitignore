@@ -39,3 +39,4 @@ build/
 *.sql.gz
 *.tar.gz
 *.zip
+.env

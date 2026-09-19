@@ -39,6 +39,9 @@ public class Conquista {
     @Column(name = "meta_licoes")
     private Integer metaLicoes;
 
+    @Column(name = "meta_ofensiva")
+    private Integer metaOfensiva;
+
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;

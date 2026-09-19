@@ -2,10 +2,20 @@ spring:
   application:
     name: tupi-digital-api
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            # O escopo padrão já é profile e email, mas você pode declarar explicitamente se quiser:
+            # scope: profile, email
+
   datasource:
-    url: jdbc:postgresql://localhost:5433/tupi_digital
-    username: tupidigital
-    password: 12345678
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/tupi_digital}
+    username: ${SPRING_DATASOURCE_USERNAME:tupidigital}
+    password: ${SPRING_DATASOURCE_PASSWORD:12345678}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -35,7 +45,7 @@ spring:
             enable: true
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 jwt:
   secret: ${JWT_SECRET:dHVwaWRpZ2l0YWwtc2VjcmV0LWtleS1leGFtcGxlLWhhcmRjb2RlZC1mb3ItZGV2ZWxvcG1lbnQ=}

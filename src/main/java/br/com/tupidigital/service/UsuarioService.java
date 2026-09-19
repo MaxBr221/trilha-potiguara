@@ -72,6 +72,8 @@ public class UsuarioService {
                             progresso = Math.min(100, (usuario.getXp() * 100) / c.getMetaXp());
                         } else if (c.getMetaLicoes() != null && c.getMetaLicoes() > 0) {
                             progresso = Math.min(100, (int) ((licoesConcluidas * 100) / c.getMetaLicoes()));
+                        } else if (c.getMetaOfensiva() != null && c.getMetaOfensiva() > 0) {
+                            progresso = Math.min(100, (usuario.getSequenciaAtual() * 100) / c.getMetaOfensiva());
                         }
                     }
                     
