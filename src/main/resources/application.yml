@@ -13,9 +13,9 @@ spring:
             # scope: profile, email
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/tupi_digital}
-    username: ${SPRING_DATASOURCE_USERNAME:tupidigital}
-    password: ${SPRING_DATASOURCE_PASSWORD:12345678}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -48,5 +48,5 @@ server:
   port: ${PORT:8080}
 
 jwt:
-  secret: ${JWT_SECRET:dHVwaWRpZ2l0YWwtc2VjcmV0LWtleS1leGFtcGxlLWhhcmRjb2RlZC1mb3ItZGV2ZWxvcG1lbnQ=}
+  secret: ${JWT_SECRET}
   expiration: 86400000 # 24 hours in milliseconds
