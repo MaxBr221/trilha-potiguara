@@ -22,6 +22,12 @@ public class EmailService {
         message.setSubject(assunto);
         message.setText(corpo);
         
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+            System.out.println("Email enviado para: " + destinatario);
+        } catch (Exception e) {
+            System.err.println("Erro ao enviar email para " + destinatario + ": " + e.getMessage());
+            System.err.println("Corpo do email:\\n" + corpo);
+        }
     }
 }
