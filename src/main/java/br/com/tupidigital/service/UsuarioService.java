@@ -129,4 +129,23 @@ public class UsuarioService {
         
         usuarioRepository.save(usuario);
     }
+    
+    public br.com.tupidigital.dto.UsuarioPerfilDTO obterPerfil() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        return new br.com.tupidigital.dto.UsuarioPerfilDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getXp(),
+                usuario.getSequenciaAtual(),
+                usuario.getPerfil().name(),
+                usuario.getFotoPerfil()
+        );
+    }
 }
