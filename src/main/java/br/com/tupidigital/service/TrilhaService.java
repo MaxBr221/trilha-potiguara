@@ -162,8 +162,8 @@ public class TrilhaService {
                 .orElseThrow(() -> new RuntimeException("Lição não encontrada"));
 
         // Aumentar ofensiva (incrementa se for concluída a lição no dia, mesmo que repetida)
-        LocalDate hoje = LocalDate.now();
-        LocalDate ultimaAtividade = usuario.getUltimaAtividade();
+        java.time.LocalDate hoje = java.time.LocalDate.now(java.time.ZoneId.of("America/Sao_Paulo"));
+        java.time.LocalDate ultimaAtividade = usuario.getUltimaAtividade();
 
         if (ultimaAtividade == null || ultimaAtividade.isBefore(hoje.minusDays(1))) {
             usuario.setSequenciaAtual(1);

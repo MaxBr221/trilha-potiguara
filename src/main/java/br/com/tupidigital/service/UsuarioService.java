@@ -91,12 +91,16 @@ public class UsuarioService {
                 .collect(Collectors.toList());
         
         int sequenciaReal = usuario.getSequenciaAtual();
-        java.time.LocalDate hoje = java.time.LocalDate.now();
+        java.time.LocalDate hoje = java.time.LocalDate.now(java.time.ZoneId.of("America/Sao_Paulo"));
         java.time.LocalDate ultimaAtividade = usuario.getUltimaAtividade();
 
         // Se o usuário não acessou ontem nem hoje, a ofensiva já foi perdida
         if (ultimaAtividade != null && ultimaAtividade.isBefore(hoje.minusDays(1))) {
             sequenciaReal = 0;
+            if (usuario.getSequenciaAtual() != 0) {
+                usuario.setSequenciaAtual(0);
+                usuarioRepository.save(usuario);
+            }
         }
         
         return new DashboardResponseDTO(

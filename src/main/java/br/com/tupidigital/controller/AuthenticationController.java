@@ -52,6 +52,17 @@ public class AuthenticationController {
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         Usuario authUser = (Usuario) auth.getPrincipal();
+
+        java.time.LocalDate hoje = java.time.LocalDate.now(java.time.ZoneId.of("America/Sao_Paulo"));
+        java.time.LocalDate ultimaAtividade = authUser.getUltimaAtividade();
+
+        if (ultimaAtividade != null && ultimaAtividade.isBefore(hoje.minusDays(1))) {
+            if (authUser.getSequenciaAtual() != 0) {
+                authUser.setSequenciaAtual(0);
+                repository.save(authUser);
+            }
+        }
+
         var token = tokenService.generateToken(authUser);
 
         TokenResponseDTO.UsuarioSessaoDTO sessaoDTO = new TokenResponseDTO.UsuarioSessaoDTO(
