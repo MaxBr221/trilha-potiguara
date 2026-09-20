@@ -19,4 +19,10 @@ public class UsuarioController {
     public ResponseEntity<DashboardResponseDTO> obterDashboard() {
         return ResponseEntity.ok(usuarioService.obterDashboard());
     }
+
+    @org.springframework.web.bind.annotation.PutMapping("/me")
+    public ResponseEntity<Void> atualizarPerfil(@org.springframework.web.bind.annotation.RequestBody br.com.tupidigital.dto.UsuarioUpdateDTO data) {
+        usuarioService.atualizarPerfil(data);
+        return ResponseEntity.ok().build();
+    }
 }

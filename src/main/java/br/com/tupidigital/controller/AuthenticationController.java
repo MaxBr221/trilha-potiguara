@@ -71,7 +71,8 @@ public class AuthenticationController {
                 authUser.getEmail(),
                 authUser.getXp(),
                 authUser.getSequenciaAtual(),
-                authUser.getPerfil().name()
+                authUser.getPerfil().name(),
+                authUser.getFotoPerfil()
         );
 
         return ResponseEntity.ok(new TokenResponseDTO(token, sessaoDTO));

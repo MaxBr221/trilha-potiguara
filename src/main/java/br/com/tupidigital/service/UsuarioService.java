@@ -111,4 +111,22 @@ public class UsuarioService {
                 conquistasDTO
         );
     }
+    public void atualizarPerfil(br.com.tupidigital.dto.UsuarioUpdateDTO data) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        if (data.nome() != null && !data.nome().isBlank()) {
+            usuario.setNome(data.nome());
+        }
+        
+        if (data.fotoPerfil() != null) {
+            usuario.setFotoPerfil(data.fotoPerfil());
+        }
+        
+        usuarioRepository.save(usuario);
+    }
 }

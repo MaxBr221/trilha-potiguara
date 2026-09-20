@@ -42,6 +42,9 @@ public class Usuario implements UserDetails {
     @Column(name = "sequencia_atual", nullable = false)
     private Integer sequenciaAtual = 0;
 
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    private String fotoPerfil;
+
     @Column(name = "ultima_atividade")
     private LocalDate ultimaAtividade;
 
@@ -92,7 +95,7 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
-    public Usuario(UUID id, String nome, String email, String senha, Perfil perfil, Integer xp, Integer sequenciaAtual, LocalDate ultimaAtividade, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
+    public Usuario(UUID id, String nome, String email, String senha, Perfil perfil, Integer xp, Integer sequenciaAtual, LocalDate ultimaAtividade, LocalDateTime criadoEm, LocalDateTime atualizadoEm, String fotoPerfil) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -103,6 +106,7 @@ public class Usuario implements UserDetails {
         this.ultimaAtividade = ultimaAtividade;
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
+        this.fotoPerfil = fotoPerfil;
     }
 
     // --- Getters e Setters ---
@@ -135,4 +139,7 @@ public class Usuario implements UserDetails {
 
     public LocalDateTime getAtualizadoEm() { return atualizadoEm; }
     public void setAtualizadoEm(LocalDateTime atualizadoEm) { this.atualizadoEm = atualizadoEm; }
+
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 }
