@@ -11,4 +11,10 @@ import java.util.UUID;
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
     UserDetails findByEmail(String email);
     boolean existsByEmail(String email);
+
+    java.util.List<Usuario> findTop20ByIdNotOrderByXpDesc(UUID id);
+
+    @org.springframework.data.jpa.repository.Query("SELECT u FROM Usuario u WHERE u.id != :id AND (LOWER(u.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :termo, '%')))")
+    java.util.List<Usuario> buscarPorNomeOuEmail(String termo, UUID id, org.springframework.data.domain.Pageable pageable);
+
 }

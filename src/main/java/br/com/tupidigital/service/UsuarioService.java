@@ -220,4 +220,29 @@ public class UsuarioService {
                 isAmigo
         );
     }
+    public java.util.List<br.com.tupidigital.dto.UsuarioBuscaDTO> buscarUsuarios(String nome) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuarioLogado = (Usuario) usuarioRepository.findByEmail(email);
+        
+        java.util.List<Usuario> resultados;
+        
+        if (nome == null || nome.trim().isEmpty()) {
+            resultados = usuarioRepository.findTop20ByIdNotOrderByXpDesc(usuarioLogado.getId());
+        } else {
+            resultados = usuarioRepository.buscarPorNomeOuEmail(
+                nome.trim(), 
+                usuarioLogado.getId(), 
+                org.springframework.data.domain.PageRequest.of(0, 20)
+            );
+        }
+        
+        return resultados.stream()
+                .map(u -> new br.com.tupidigital.dto.UsuarioBuscaDTO(
+                        u.getId(),
+                        u.getNome(),
+                        u.getXp(),
+                        u.getFotoPerfil()
+                ))
+                .collect(Collectors.toList());
+    }
 }

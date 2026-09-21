@@ -52,4 +52,10 @@ public class UsuarioController {
     public ResponseEntity<br.com.tupidigital.dto.UsuarioPerfilPublicoDTO> obterPerfilPublico(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
         return ResponseEntity.ok(usuarioService.obterPerfilPublico(id));
     }
+
+    @org.springframework.web.bind.annotation.GetMapping("/busca")
+    public ResponseEntity<java.util.List<br.com.tupidigital.dto.UsuarioBuscaDTO>> buscarUsuarios(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String nome) {
+        return ResponseEntity.ok(usuarioService.buscarUsuarios(nome));
+    }
 }
