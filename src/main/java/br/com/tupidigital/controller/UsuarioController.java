@@ -30,4 +30,26 @@ public class UsuarioController {
         usuarioService.atualizarPerfil(data);
         return ResponseEntity.ok().build();
     }
+
+    @org.springframework.web.bind.annotation.PostMapping("/amigos/{id}")
+    public ResponseEntity<Void> adicionarAmigo(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
+        usuarioService.adicionarAmigo(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/amigos/{id}")
+    public ResponseEntity<Void> removerAmigo(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
+        usuarioService.removerAmigo(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/amigos")
+    public ResponseEntity<java.util.List<br.com.tupidigital.dto.AmigoDTO>> listarAmigos() {
+        return ResponseEntity.ok(usuarioService.listarAmigos());
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/perfil/{id}")
+    public ResponseEntity<br.com.tupidigital.dto.UsuarioPerfilPublicoDTO> obterPerfilPublico(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
+        return ResponseEntity.ok(usuarioService.obterPerfilPublico(id));
+    }
 }

@@ -56,6 +56,14 @@ public class Usuario implements UserDetails {
     @Column(name = "atualizado_em", nullable = false)
     private LocalDateTime atualizadoEm;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "amigos",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    private java.util.Set<Usuario> amigos = new java.util.HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.perfil.name()));
@@ -142,4 +150,15 @@ public class Usuario implements UserDetails {
 
     public String getFotoPerfil() { return fotoPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
+
+    public java.util.Set<Usuario> getAmigos() { return amigos; }
+    public void setAmigos(java.util.Set<Usuario> amigos) { this.amigos = amigos; }
+
+    public void adicionarAmigo(Usuario amigo) {
+        this.amigos.add(amigo);
+    }
+
+    public void removerAmigo(Usuario amigo) {
+        this.amigos.remove(amigo);
+    }
 }

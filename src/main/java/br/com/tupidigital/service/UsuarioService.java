@@ -148,4 +148,76 @@ public class UsuarioService {
                 usuario.getFotoPerfil()
         );
     }
+
+    public void adicionarAmigo(java.util.UUID amigoId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        Usuario amigo = usuarioRepository.findById(amigoId).orElseThrow(() -> new RuntimeException("Amigo não encontrado"));
+        
+        if (usuario.getId().equals(amigoId)) {
+            throw new RuntimeException("Você não pode adicionar a si mesmo como amigo");
+        }
+        
+        usuario.adicionarAmigo(amigo);
+        usuarioRepository.save(usuario);
+    }
+
+    public void removerAmigo(java.util.UUID amigoId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        Usuario amigo = usuarioRepository.findById(amigoId).orElseThrow(() -> new RuntimeException("Amigo não encontrado"));
+        
+        usuario.removerAmigo(amigo);
+        usuarioRepository.save(usuario);
+    }
+
+    public java.util.List<br.com.tupidigital.dto.AmigoDTO> listarAmigos() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        return usuario.getAmigos().stream()
+                .map(amigo -> new br.com.tupidigital.dto.AmigoDTO(
+                        amigo.getId(),
+                        amigo.getNome(),
+                        amigo.getXp(),
+                        amigo.getSequenciaAtual(),
+                        amigo.getFotoPerfil()
+                ))
+                .sorted(java.util.Comparator.comparing(br.com.tupidigital.dto.AmigoDTO::xp).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public br.com.tupidigital.dto.UsuarioPerfilPublicoDTO obterPerfilPublico(java.util.UUID amigoId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuarioLogado = (Usuario) usuarioRepository.findByEmail(email);
+        
+        Usuario amigo = usuarioRepository.findById(amigoId).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        
+        boolean isAmigo = usuarioLogado != null && usuarioLogado.getAmigos().contains(amigo);
+        int totalAmigos = amigo.getAmigos().size();
+        
+        return new br.com.tupidigital.dto.UsuarioPerfilPublicoDTO(
+                amigo.getId(),
+                amigo.getNome(),
+                amigo.getXp(),
+                amigo.getSequenciaAtual(),
+                amigo.getFotoPerfil(),
+                totalAmigos,
+                isAmigo
+        );
+    }
 }
