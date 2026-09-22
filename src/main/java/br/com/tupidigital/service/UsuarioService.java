@@ -36,6 +36,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioConquistaRepository usuarioConquistaRepository;
 
+    @Autowired
+    private br.com.tupidigital.repository.NotificacaoRepository notificacaoRepository;
+
     public DashboardResponseDTO obterDashboard() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDetails userDetails = usuarioRepository.findByEmail(email);
@@ -124,7 +127,11 @@ public class UsuarioService {
         }
         
         if (data.fotoPerfil() != null) {
-            usuario.setFotoPerfil(data.fotoPerfil());
+            if (data.fotoPerfil().trim().isEmpty()) {
+                usuario.setFotoPerfil(null);
+            } else {
+                usuario.setFotoPerfil(data.fotoPerfil());
+            }
         }
         
         usuarioRepository.save(usuario);
@@ -163,8 +170,19 @@ public class UsuarioService {
             throw new RuntimeException("Você não pode adicionar a si mesmo como amigo");
         }
         
-        usuario.adicionarAmigo(amigo);
-        usuarioRepository.save(usuario);
+        boolean jaEraAmigo = usuario.getAmigos().contains(amigo);
+        
+        if (!jaEraAmigo) {
+            usuario.adicionarAmigo(amigo);
+            usuarioRepository.save(usuario);
+            
+            br.com.tupidigital.entity.Notificacao notificacao = new br.com.tupidigital.entity.Notificacao();
+            notificacao.setUsuario(amigo);
+            notificacao.setRemetente(usuario);
+            notificacao.setTipo(br.com.tupidigital.entity.TipoNotificacao.NOVO_SEGUIDOR);
+            notificacao.setMensagem("começou a seguir você");
+            notificacaoRepository.save(notificacao);
+        }
     }
 
     public void removerAmigo(java.util.UUID amigoId) {
@@ -244,5 +262,45 @@ public class UsuarioService {
                         u.getFotoPerfil()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public java.util.List<br.com.tupidigital.dto.NotificacaoDTO> listarNotificacoes() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        return notificacaoRepository.findByUsuarioIdOrderByCriadoEmDesc(usuario.getId())
+                .stream()
+                .map(n -> new br.com.tupidigital.dto.NotificacaoDTO(
+                        n.getId(),
+                        new br.com.tupidigital.dto.RemetenteDTO(n.getRemetente().getNome(), n.getRemetente().getFotoPerfil()),
+                        n.getTipo().name(),
+                        n.getMensagem(),
+                        n.isLida(),
+                        n.getCriadoEm()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public void marcarNotificacaoLida(java.util.UUID notificacaoId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        
+        br.com.tupidigital.entity.Notificacao notificacao = notificacaoRepository.findById(notificacaoId)
+                .orElseThrow(() -> new RuntimeException("Notificação não encontrada"));
+                
+        if (!notificacao.getUsuario().getId().equals(usuario.getId())) {
+            throw new RuntimeException("Acesso negado");
+        }
+        
+        notificacao.setLida(true);
+        notificacaoRepository.save(notificacao);
     }
 }

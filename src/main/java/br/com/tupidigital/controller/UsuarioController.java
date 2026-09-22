@@ -58,4 +58,15 @@ public class UsuarioController {
             @org.springframework.web.bind.annotation.RequestParam(required = false) String nome) {
         return ResponseEntity.ok(usuarioService.buscarUsuarios(nome));
     }
+
+    @org.springframework.web.bind.annotation.GetMapping("/notificacoes")
+    public ResponseEntity<java.util.List<br.com.tupidigital.dto.NotificacaoDTO>> listarNotificacoes() {
+        return ResponseEntity.ok(usuarioService.listarNotificacoes());
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/notificacoes/{id}/lida")
+    public ResponseEntity<Void> marcarNotificacaoLida(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
+        usuarioService.marcarNotificacaoLida(id);
+        return ResponseEntity.ok().build();
+    }
 }
