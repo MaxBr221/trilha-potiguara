@@ -13,6 +13,7 @@ public record TrilhaResponseDTO(
         Integer quantidadeModulos,
         String icon,
         String corBase,
+        String imageUrl,
         Boolean estaBloqueada
 ) {
     public static TrilhaResponseDTO fromEntity(Trilha trilha, int quantidadeModulos, int progresso, int nivel, boolean estaBloqueada) {
@@ -26,6 +27,7 @@ public record TrilhaResponseDTO(
                 quantidadeModulos,
                 trilha.getIcon(),
                 trilha.getCorBase(),
+                trilha.getImageUrl(),
                 estaBloqueada
         );
     }

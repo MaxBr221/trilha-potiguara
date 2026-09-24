@@ -47,6 +47,9 @@ public class Trilha {
     @Builder.Default
     private String corBase = "emerald";
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "trilha", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Modulo> modulos;
 
