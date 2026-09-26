@@ -36,7 +36,7 @@ public class TrilhaController {
     @GetMapping("/trilhas/{trailId}/modulos")
     public ResponseEntity<List<ModuloResponseDTO>> listarModulos(@PathVariable UUID trailId) {
         return ResponseEntity.ok(trilhaService.listarModulosPorTrilha(trailId));
-    }7
+    }
 
     @GetMapping("/modulos/{id}/licoes")
     public ResponseEntity<List<LicaoResponseDTO>> listarLicoes(@PathVariable UUID id) {
