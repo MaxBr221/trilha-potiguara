@@ -30,6 +30,11 @@ public class ConteudoLinguisticoController {
         return ResponseEntity.ok(service.listarTodos());
     }
 
+    @GetMapping("/licoes/{licaoId}")
+    public ResponseEntity<List<ConteudoLinguisticoResponseDTO>> listarPorLicao(@PathVariable UUID licaoId) {
+        return ResponseEntity.ok(service.listarPorLicao(licaoId));
+    }
+
     @PostMapping("/{id}/vincular-licao/{licaoId}")
     public ResponseEntity<Void> vincularALicao(@PathVariable UUID id, @PathVariable UUID licaoId) {
         service.vincularALicao(id, licaoId);

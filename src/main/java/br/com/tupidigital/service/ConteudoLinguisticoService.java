@@ -41,6 +41,13 @@ public class ConteudoLinguisticoService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<ConteudoLinguisticoResponseDTO> listarPorLicao(UUID licaoId) {
+        return repository.findByLicaoId(licaoId).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void vincularALicao(UUID conteudoId, UUID licaoId) {
         ConteudoLinguistico conteudo = repository.findById(conteudoId)
