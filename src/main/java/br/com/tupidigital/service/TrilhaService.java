@@ -7,6 +7,7 @@ import br.com.tupidigital.repository.LicaoRepository;
 import br.com.tupidigital.repository.ModuloRepository;
 import br.com.tupidigital.repository.TrilhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class TrilhaService {
         return (Usuario) userDetails;
     }
 
+    @Cacheable(value = "trilhas", key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication() != null && T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().isAuthenticated() && !T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getPrincipal().equals('anonymousUser') ? T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName() : 'anonymous'")
     public List<TrilhaResponseDTO> listarTrilhas() {
         Usuario usuario = getAuthenticatedUsuario();
         return trilhaRepository.findAll().stream()
